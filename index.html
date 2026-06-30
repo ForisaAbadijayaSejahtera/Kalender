@@ -234,10 +234,11 @@
         }
 
         .day-cell .chinese-small {
-            font-family: 'Noto Serif SC', serif;
-            font-size: 0.6rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.55rem;
             opacity: 0.6;
             margin-top: 1px;
+            font-weight: 500;
         }
 
         .day-cell .pasaran-small {
@@ -330,7 +331,7 @@
                 padding: 4px;
             }
             .day-cell .gregorian { font-size: 0.85rem; }
-            .day-cell .hijri-small, .day-cell .chinese-small { font-size: 0.5rem; }
+            .day-cell .hijri-small, .day-cell .chinese-small { font-size: 0.45rem; }
             .day-cell .pasaran-small { font-size: 0.45rem; }
             header h1 { font-size: 1.4rem; }
             .dates-grid { grid-template-columns: 1fr 1fr; }
@@ -673,9 +674,9 @@
                 </div>
                 <div class="date-box chinese">
                     <div class="label">Imlek (Cina)</div>
-                    <div class="day-num">${chineseDays[chinese.day - 1] || chinese.day}</div>
-                    <div class="month-year">${chineseMonths[chinese.month]} ${chinese.year}</div>
-                    <div class="weekday">${chinese.yearAnimal}</div>
+                    <div class="day-num">${chinese.day}</div>
+                    <div class="month-year">Bulan ${chinese.month + 1} / ${chineseMonths[chinese.month]}</div>
+                    <div class="weekday">Tahun ${chinese.year} · Shio ${chinese.yearAnimal}</div>
                     <div class="pasaran">${pasaran}</div>
                 </div>
                 <div class="date-box hebrew">
@@ -743,7 +744,7 @@
             const tooltipData = `
                 <div class="tt-row"><span class="tt-label">Masehi</span><span>${dayNum} ${gregorianMonths[date.getMonth()]} ${date.getFullYear()}</span></div>
                 <div class="tt-row"><span class="tt-label">Hijriah</span><span>${hijri.day} ${hijriMonths[hijri.month]} ${hijri.year} H</span></div>
-                <div class="tt-row"><span class="tt-label">Imlek</span><span>${chineseDays[chinese.day - 1] || chinese.day} ${chineseMonths[chinese.month]} ${chinese.year} (${chinese.yearAnimal})</span></div>
+                <div class="tt-row"><span class="tt-label">Imlek</span><span>Tgl ${chinese.day} · Bulan ${chinese.month + 1} (${chineseMonths[chinese.month]}) · Tahun ${chinese.year} · Shio ${chinese.yearAnimal}</span></div>
                 <div class="tt-row"><span class="tt-label">Ibrani</span><span>${hebrew.day} ${hebrew.monthName} ${hebrew.year}</span></div>
                 <div class="tt-row"><span class="tt-label">Pasaran</span><span>${weekdays[dayOfWeek]} ${pasaran}</span></div>
             `;
@@ -754,7 +755,7 @@
                     ${isWeekend ? '<div class="weekend"></div>' : ''}
                     <div class="gregorian">${dayNum}</div>
                     <div class="hijri-small">${hijri.day}</div>
-                    <div class="chinese-small">${chinese.day}</div>
+                    <div class="chinese-small">${chinese.month + 1}/${chinese.day}</div>
                     <div class="pasaran-small">${pasaran}</div>
                 </div>
             `;
