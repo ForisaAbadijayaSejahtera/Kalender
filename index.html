@@ -117,6 +117,50 @@
             direction: rtl;
         }
 
+        /* Search Box */
+        .search-box {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box input[type="date"] {
+            padding: 10px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .search-box input[type="date"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .search-box button {
+            padding: 10px 24px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-box button:hover {
+            background: #2563eb;
+            transform: scale(1.05);
+        }
+
         .controls {
             display: flex;
             justify-content: center;
@@ -325,6 +369,131 @@
             letter-spacing: 1px;
         }
 
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.3rem;
+            color: #1e293b;
+        }
+
+        .modal-close {
+            background: #f1f5f9;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .modal-dates {
+            display: grid;
+            gap: 12px;
+        }
+
+        .modal-date-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .modal-date-row .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .modal-date-row.masehi .icon { background: #dbeafe; }
+        .modal-date-row.hijri .icon { background: #dcfce7; }
+        .modal-date-row.chinese .icon { background: #fef3c7; }
+        .modal-date-row.hebrew .icon { background: #f3e8ff; }
+        .modal-date-row.pasaran .icon { background: #ffedd5; }
+
+        .modal-date-row .info {
+            flex: 1;
+        }
+
+        .modal-date-row .info .label {
+            font-size: 0.75rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .modal-date-row .info .value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .modal-date-row .info .sub {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
         @media (max-width: 768px) {
             .day-cell {
                 min-height: 65px;
@@ -336,6 +505,7 @@
             header h1 { font-size: 1.4rem; }
             .dates-grid { grid-template-columns: 1fr 1fr; }
             .date-box .day-num { font-size: 1.8rem; }
+            .modal { padding: 20px; }
         }
     </style>
 </head>
@@ -349,6 +519,11 @@
         <div class="today-card">
             <h2>Hari Ini</h2>
             <div class="dates-grid" id="todayGrid"></div>
+        </div>
+
+        <div class="search-box">
+            <input type="date" id="searchDate" value="2026-07-01">
+            <button onclick="searchDate()">🔍 Cari Tanggal</button>
         </div>
 
         <div class="controls">
@@ -379,6 +554,17 @@
 
     <div class="tooltip" id="tooltip"></div>
 
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>📋 Detail Tanggal</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-dates" id="modalDates"></div>
+        </div>
+    </div>
+
     <script>
         // ============================================================
         // DATA KALENDER CINA (Imlek) - Data astronomi 2024-2100
@@ -402,23 +588,11 @@
             2099: [1,22], 2100: [2,11]
         };
 
-        // Nama bulan Imlek dalam bahasa Indonesia/Hokkien
         const chineseMonths = [
-            "Chiat Gwee",   // 正月 - bulan 1
-            "Di Gwee",      // 二月 - bulan 2
-            "Sa Gwee",      // 三月 - bulan 3
-            "Si Gwee",      // 四月 - bulan 4
-            "Go Gwee",      // 五月 - bulan 5
-            "Lak Gwee",     // 六月 - bulan 6
-            "Chit Gwee",    // 七月 - bulan 7
-            "Pat Gwee",     // 八月 - bulan 8
-            "Kau Gwee",     // 九月 - bulan 9
-            "Chap Gwee",    // 十月 - bulan 10
-            "Chap-it Gwee", // 冬月 - bulan 11
-            "Chap-ji Gwee"  // 腊月 - bulan 12
+            "Chiat Gwee", "Di Gwee", "Sa Gwee", "Si Gwee", "Go Gwee", "Lak Gwee",
+            "Chit Gwee", "Pat Gwee", "Kau Gwee", "Chap Gwee", "Chap-it Gwee", "Chap-ji Gwee"
         ];
 
-        // Nama hari Imlek
         const chineseDays = [
             "Tanggal 1", "Tanggal 2", "Tanggal 3", "Tanggal 4", "Tanggal 5",
             "Tanggal 6", "Tanggal 7", "Tanggal 8", "Tanggal 9", "Tanggal 10",
@@ -428,7 +602,6 @@
             "Tanggal 26", "Tanggal 27", "Tanggal 28", "Tanggal 29", "Tanggal 30"
         ];
 
-        // Shio dalam bahasa Indonesia
         const chineseZodiac = [
             "Tikus", "Kerbau", "Macan", "Kelinci", "Naga", "Ular",
             "Kuda", "Kambing", "Monyet", "Ayam", "Anjing", "Babi"
@@ -457,8 +630,6 @@
 
         // ============================================================
         // HARI PASARAN JAWA
-        // Siklus 5 hari: Legi, Pahing, Pon, Wage, Kliwon
-        // Referensi: 29 Juni 2026 = Senin Pahing (index 1)
         // ============================================================
         const pasaranNames = ["Legi","Pahing","Pon","Wage","Kliwon"];
 
@@ -474,7 +645,6 @@
 
         // ============================================================
         // KONVERSI HARI PASARAN JAWA
-        // Referensi: 29 Juni 2026 = Pahing (index 1)
         // ============================================================
         function getPasaran(date) {
             const refDate = new Date(2026, 5, 29);
@@ -486,8 +656,7 @@
         }
 
         // ============================================================
-        // KONVERSI HIJRIAH (Algoritma Ummul Qura)
-        // Referensi: 1 Muharram 1447 = 26 Juni 2025
+        // KONVERSI HIJRIAH
         // ============================================================
         function gregorianToHijri(gregDate) {
             const d = new Date(gregDate);
@@ -526,8 +695,6 @@
 
         // ============================================================
         // KONVERSI CINA (Imlek)
-        // Tahun Imlek = tahun Gregorian + 551
-        // 2026 + 551 = 2577
         // ============================================================
         function gregorianToChinese(gregDate) {
             const d = new Date(gregDate);
@@ -555,7 +722,6 @@
                 chineseDay -= monthLengths[i];
                 chineseMonth = i + 1;
             }
-            // Tahun Imlek = tahun Gregorian + 551
             const imlekYear = chineseYear + 551;
             const zodiacIndex = ((chineseYear - 4) % 12 + 12) % 12;
             return { day: chineseDay, month: chineseMonth, year: imlekYear, zodiac: zodiacIndex, yearAnimal: chineseZodiac[zodiacIndex] };
@@ -597,6 +763,75 @@
         }
 
         // ============================================================
+        // MODAL FUNCTIONS
+        // ============================================================
+        function showModal(date) {
+            const hijri = gregorianToHijri(date);
+            const chinese = gregorianToChinese(date);
+            const hebrew = gregorianToHebrew(date);
+            const pasaran = getPasaran(date);
+            const dayOfWeek = date.getDay();
+
+            const html = `
+                <div class="modal-date-row masehi">
+                    <div class="icon">📅</div>
+                    <div class="info">
+                        <div class="label">Masehi (Gregorian)</div>
+                        <div class="value">${weekdays[dayOfWeek]}, ${date.getDate()} ${gregorianMonths[date.getMonth()]} ${date.getFullYear()}</div>
+                    </div>
+                </div>
+                <div class="modal-date-row hijri">
+                    <div class="icon">🌙</div>
+                    <div class="info">
+                        <div class="label">Hijriah (Islam)</div>
+                        <div class="value">${hijri.day} ${hijriMonths[hijri.month]} ${hijri.year} H</div>
+                        <div class="sub">Tahun ${hijri.year} Hijriah</div>
+                    </div>
+                </div>
+                <div class="modal-date-row chinese">
+                    <div class="icon">🐉</div>
+                    <div class="info">
+                        <div class="label">Imlek (Cina)</div>
+                        <div class="value">${chineseMonths[chinese.month]} ${chinese.day}, Tahun ${chinese.year}</div>
+                        <div class="sub">Shio ${chinese.yearAnimal}</div>
+                    </div>
+                </div>
+                <div class="modal-date-row hebrew">
+                    <div class="icon">✡️</div>
+                    <div class="info">
+                        <div class="label">Ibrani (Hebrew)</div>
+                        <div class="value">${hebrew.day} ${hebrew.monthName} ${hebrew.year}</div>
+                        <div class="sub">Tahun ${hebrew.year}</div>
+                    </div>
+                </div>
+                <div class="modal-date-row pasaran">
+                    <div class="icon">🕉️</div>
+                    <div class="info">
+                        <div class="label">Pasaran Jawa</div>
+                        <div class="value">${weekdays[dayOfWeek]} ${pasaran}</div>
+                        <div class="sub">Siklus 5 hari: Legi, Pahing, Pon, Wage, Kliwon</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById("modalDates").innerHTML = html;
+            document.getElementById("modalOverlay").classList.add("show");
+        }
+
+        function closeModal(e) {
+            if (!e || e.target === document.getElementById("modalOverlay") || e.target.closest('.modal-close')) {
+                document.getElementById("modalOverlay").classList.remove("show");
+            }
+        }
+
+        function searchDate() {
+            const input = document.getElementById("searchDate").value;
+            if (input) {
+                const date = new Date(input + "T00:00:00");
+                showModal(date);
+            }
+        }
+
+        // ============================================================
         // RENDER KARTU HARI INI
         // ============================================================
         function renderToday() {
@@ -606,28 +841,28 @@
             const hebrew = gregorianToHebrew(today);
             const pasaran = getPasaran(today);
             const html = `
-                <div class="date-box">
+                <div class="date-box" onclick="showModal(new Date())">
                     <div class="label">Masehi (Gregorian)</div>
                     <div class="day-num">${today.getDate()}</div>
                     <div class="month-year">${gregorianMonths[today.getMonth()]} ${today.getFullYear()}</div>
                     <div class="weekday">${weekdays[today.getDay()]}</div>
                     <div class="pasaran">${pasaran}</div>
                 </div>
-                <div class="date-box hijri">
+                <div class="date-box hijri" onclick="showModal(new Date())">
                     <div class="label">Hijriah (Islam)</div>
                     <div class="day-num">${hijri.day}</div>
                     <div class="month-year">${hijriMonths[hijri.month]}</div>
                     <div class="weekday">Tahun ${hijri.year} H</div>
                     <div class="pasaran">${pasaran}</div>
                 </div>
-                <div class="date-box chinese">
+                <div class="date-box chinese" onclick="showModal(new Date())">
                     <div class="label">Imlek (Cina)</div>
                     <div class="day-num">${chinese.day}</div>
                     <div class="month-year">${chineseMonths[chinese.month]}</div>
                     <div class="weekday">Tahun ${chinese.year} · Shio ${chinese.yearAnimal}</div>
                     <div class="pasaran">${pasaran}</div>
                 </div>
-                <div class="date-box hebrew">
+                <div class="date-box hebrew" onclick="showModal(new Date())">
                     <div class="label">Ibrani (Hebrew)</div>
                     <div class="day-num">${hebrew.day}</div>
                     <div class="month-year">${hebrew.monthName}</div>
@@ -670,6 +905,7 @@
             }
             document.getElementById("calendarGrid").innerHTML = html;
             setupTooltips();
+            setupDayClicks();
         }
 
         function renderDayCell(date, dayNum, isOtherMonth, isToday) {
@@ -679,6 +915,7 @@
             const pasaran = getPasaran(date);
             const dayOfWeek = date.getDay();
             const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+            const dateStr = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
             const tooltipData = `
                 <div class="tt-row"><span class="tt-label">Masehi</span><span>${dayNum} ${gregorianMonths[date.getMonth()]} ${date.getFullYear()}</span></div>
                 <div class="tt-row"><span class="tt-label">Hijriah</span><span>${hijri.day} ${hijriMonths[hijri.month]} · Tahun ${hijri.year} H</span></div>
@@ -687,7 +924,7 @@
                 <div class="tt-row"><span class="tt-label">Pasaran</span><span>${weekdays[dayOfWeek]} ${pasaran}</span></div>
             `;
             return `
-                <div class="day-cell ${isOtherMonth ? "other-month" : ""} ${isToday ? "today" : ""}" data-tooltip="${tooltipData.replace(/"/g, "&quot;")}">
+                <div class="day-cell ${isOtherMonth ? "other-month" : ""} ${isToday ? "today" : ""}" data-date="${dateStr}" data-tooltip="${tooltipData.replace(/"/g, "&quot;")}">
                     ${isWeekend ? "<div class=\"weekend\"></div>" : ""}
                     <div class="gregorian">${dayNum}</div>
                     <div class="hijri-small">${hijri.day}</div>
@@ -718,11 +955,27 @@
             });
         }
 
+        function setupDayClicks() {
+            const cells = document.querySelectorAll(".day-cell");
+            cells.forEach(cell => {
+                cell.addEventListener("click", () => {
+                    const dateStr = cell.getAttribute("data-date");
+                    if (dateStr) {
+                        const date = new Date(dateStr + "T00:00:00");
+                        showModal(date);
+                    }
+                });
+            });
+        }
+
         function changeMonth(delta) {
             displayDate.setMonth(displayDate.getMonth() + delta);
             renderCalendar();
         }
 
+        // ============================================================
+        // INISIALISASI
+        // ============================================================
         renderToday();
         renderCalendar();
     </script>
