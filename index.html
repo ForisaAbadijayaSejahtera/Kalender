@@ -63,6 +63,7 @@
             padding: 20px;
             border: 1px solid rgba(255,255,255,0.1);
             transition: transform 0.2s, background 0.2s;
+            cursor: pointer;
         }
 
         .date-box:hover {
@@ -117,7 +118,6 @@
             direction: rtl;
         }
 
-        /* Search Box */
         .search-box {
             display: flex;
             justify-content: center;
@@ -369,7 +369,6 @@
             letter-spacing: 1px;
         }
 
-        /* Modal Styles */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -554,7 +553,6 @@
 
     <div class="tooltip" id="tooltip"></div>
 
-    <!-- Modal -->
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
         <div class="modal" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -566,9 +564,6 @@
     </div>
 
     <script>
-        // ============================================================
-        // DATA KALENDER CINA (Imlek) - Data astronomi 2024-2100
-        // ============================================================
         const chineseNewYearData = {
             2024: [2,10], 2025: [1,29], 2026: [2,17], 2027: [2,6], 2028: [1,26],
             2029: [2,13], 2030: [2,3], 2031: [1,23], 2032: [2,11], 2033: [1,31],
@@ -593,23 +588,11 @@
             "Chit Gwee", "Pat Gwee", "Kau Gwee", "Chap Gwee", "Chap-it Gwee", "Chap-ji Gwee"
         ];
 
-        const chineseDays = [
-            "Tanggal 1", "Tanggal 2", "Tanggal 3", "Tanggal 4", "Tanggal 5",
-            "Tanggal 6", "Tanggal 7", "Tanggal 8", "Tanggal 9", "Tanggal 10",
-            "Tanggal 11", "Tanggal 12", "Tanggal 13", "Tanggal 14", "Tanggal 15",
-            "Tanggal 16", "Tanggal 17", "Tanggal 18", "Tanggal 19", "Tanggal 20",
-            "Tanggal 21", "Tanggal 22", "Tanggal 23", "Tanggal 24", "Tanggal 25",
-            "Tanggal 26", "Tanggal 27", "Tanggal 28", "Tanggal 29", "Tanggal 30"
-        ];
-
         const chineseZodiac = [
             "Tikus", "Kerbau", "Macan", "Kelinci", "Naga", "Ular",
             "Kuda", "Kambing", "Monyet", "Ayam", "Anjing", "Babi"
         ];
 
-        // ============================================================
-        // DATA KALENDER IBRANI (Hebrew) - Rosh Hashanah 2024-2050
-        // ============================================================
         const hebrewNewYearData = {
             2024: [10,3], 2025: [9,23], 2026: [9,12], 2027: [10,2], 2028: [9,21],
             2029: [9,10], 2030: [9,28], 2031: [9,18], 2032: [9,6], 2033: [9,24],
@@ -622,20 +605,11 @@
         const hebrewMonths = ["Tishrei","Cheshvan","Kislev","Tevet","Shevat","Adar","Nisan","Iyar","Sivan","Tammuz","Av","Elul"];
         const hebrewMonthsLeap = ["Tishrei","Cheshvan","Kislev","Tevet","Shevat","Adar I","Adar II","Nisan","Iyar","Sivan","Tammuz","Av","Elul"];
 
-        // ============================================================
-        // DATA KALENDER HIJRIAH
-        // ============================================================
         const hijriMonths = ["Muharram","Safar","Rabi\u0027ul Awal","Rabi\u0027ul Akhir","Jumadil Awal","Jumadil Akhir",
                               "Rajab","Sya\u0027ban","Ramadhan","Syawal","Dzulqa\u0027dah","Dzulhijjah"];
 
-        // ============================================================
-        // HARI PASARAN JAWA
-        // ============================================================
         const pasaranNames = ["Legi","Pahing","Pon","Wage","Kliwon"];
 
-        // ============================================================
-        // UTILITAS UMUM
-        // ============================================================
         let currentDate = new Date();
         let displayDate = new Date();
 
@@ -643,9 +617,6 @@
         const weekdays = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
         const weekdaysShort = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
 
-        // ============================================================
-        // KONVERSI HARI PASARAN JAWA
-        // ============================================================
         function getPasaran(date) {
             const refDate = new Date(2026, 5, 29);
             const refPasaranIdx = 1;
@@ -655,9 +626,6 @@
             return pasaranNames[pasaranIndex];
         }
 
-        // ============================================================
-        // KONVERSI HIJRIAH
-        // ============================================================
         function gregorianToHijri(gregDate) {
             const d = new Date(gregDate);
             const refDate = new Date(2025, 5, 26);
@@ -693,43 +661,62 @@
             return { day: hijriDay, month: hijriMonth, year: hijriYear };
         }
 
-        // ============================================================
-        // KONVERSI CINA (Imlek)
-        // ============================================================
         function gregorianToChinese(gregDate) {
             const d = new Date(gregDate);
             const year = d.getFullYear();
+            const month = d.getMonth();
+            const day = d.getDate();
+
             let cnyThisYear = chineseNewYearData[year];
             let cnyPrevYear = chineseNewYearData[year - 1];
-            if (!cnyThisYear) return { day: 1, month: 0, year: year + 551, zodiac: 0, yearAnimal: "?" };
+
+            if (!cnyThisYear) {
+                return { day: 1, month: 0, year: year + 551, zodiac: 0, yearAnimal: "?" };
+            }
+
             const cnyDate = new Date(year, cnyThisYear[0] - 1, cnyThisYear[1]);
+
             let chineseYear, daysSinceCNY;
+
             if (d < cnyDate) {
                 if (cnyPrevYear) {
                     const prevCnyDate = new Date(year - 1, cnyPrevYear[0] - 1, cnyPrevYear[1]);
                     daysSinceCNY = Math.floor((d - prevCnyDate) / (1000 * 60 * 60 * 24));
                     chineseYear = year - 1;
-                } else { daysSinceCNY = 0; chineseYear = year; }
+                } else {
+                    daysSinceCNY = 0;
+                    chineseYear = year;
+                }
             } else {
                 daysSinceCNY = Math.floor((d - cnyDate) / (1000 * 60 * 60 * 24));
                 chineseYear = year;
             }
+
             const monthLengths = [30,29,30,29,30,29,30,29,30,29,30,29,30];
             let chineseMonth = 0;
             let chineseDay = daysSinceCNY + 1;
+
             for (let i = 0; i < 12; i++) {
-                if (chineseDay <= monthLengths[i]) { chineseMonth = i; break; }
+                if (chineseDay <= monthLengths[i]) {
+                    chineseMonth = i;
+                    break;
+                }
                 chineseDay -= monthLengths[i];
                 chineseMonth = i + 1;
             }
+
             const imlekYear = chineseYear + 551;
             const zodiacIndex = ((chineseYear - 4) % 12 + 12) % 12;
-            return { day: chineseDay, month: chineseMonth, year: imlekYear, zodiac: zodiacIndex, yearAnimal: chineseZodiac[zodiacIndex] };
+
+            return { 
+                day: chineseDay, 
+                month: chineseMonth, 
+                year: imlekYear, 
+                zodiac: zodiacIndex, 
+                yearAnimal: chineseZodiac[zodiacIndex] 
+            };
         }
 
-        // ============================================================
-        // KONVERSI IBRANI (Hebrew)
-        // ============================================================
         function gregorianToHebrew(gregDate) {
             const d = new Date(gregDate);
             const year = d.getFullYear();
@@ -762,9 +749,6 @@
             return { day: hebrewDay, month: hebrewMonth, year: hebrewYear, monthName: monthName };
         }
 
-        // ============================================================
-        // MODAL FUNCTIONS
-        // ============================================================
         function showModal(date) {
             const hijri = gregorianToHijri(date);
             const chinese = gregorianToChinese(date);
@@ -772,47 +756,46 @@
             const pasaran = getPasaran(date);
             const dayOfWeek = date.getDay();
 
-            const html = `
-                <div class="modal-date-row masehi">
-                    <div class="icon">📅</div>
-                    <div class="info">
-                        <div class="label">Masehi (Gregorian)</div>
-                        <div class="value">${weekdays[dayOfWeek]}, ${date.getDate()} ${gregorianMonths[date.getMonth()]} ${date.getFullYear()}</div>
-                    </div>
-                </div>
-                <div class="modal-date-row hijri">
-                    <div class="icon">🌙</div>
-                    <div class="info">
-                        <div class="label">Hijriah (Islam)</div>
-                        <div class="value">${hijri.day} ${hijriMonths[hijri.month]} ${hijri.year} H</div>
-                        <div class="sub">Tahun ${hijri.year} Hijriah</div>
-                    </div>
-                </div>
-                <div class="modal-date-row chinese">
-                    <div class="icon">🐉</div>
-                    <div class="info">
-                        <div class="label">Imlek (Cina)</div>
-                        <div class="value">${chineseMonths[chinese.month]} ${chinese.day}, Tahun ${chinese.year}</div>
-                        <div class="sub">Shio ${chinese.yearAnimal}</div>
-                    </div>
-                </div>
-                <div class="modal-date-row hebrew">
-                    <div class="icon">✡️</div>
-                    <div class="info">
-                        <div class="label">Ibrani (Hebrew)</div>
-                        <div class="value">${hebrew.day} ${hebrew.monthName} ${hebrew.year}</div>
-                        <div class="sub">Tahun ${hebrew.year}</div>
-                    </div>
-                </div>
-                <div class="modal-date-row pasaran">
-                    <div class="icon">🕉️</div>
-                    <div class="info">
-                        <div class="label">Pasaran Jawa</div>
-                        <div class="value">${weekdays[dayOfWeek]} ${pasaran}</div>
-                        <div class="sub">Siklus 5 hari: Legi, Pahing, Pon, Wage, Kliwon</div>
-                    </div>
-                </div>
-            `;
+            const html = '<div class="modal-date-row masehi">' +
+                '<div class="icon">📅</div>' +
+                '<div class="info">' +
+                    '<div class="label">Masehi (Gregorian)</div>' +
+                    '<div class="value">' + weekdays[dayOfWeek] + ', ' + date.getDate() + ' ' + gregorianMonths[date.getMonth()] + ' ' + date.getFullYear() + '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="modal-date-row hijri">' +
+                '<div class="icon">🌙</div>' +
+                '<div class="info">' +
+                    '<div class="label">Hijriah (Islam)</div>' +
+                    '<div class="value">' + hijri.day + ' ' + hijriMonths[hijri.month] + ' ' + hijri.year + ' H</div>' +
+                    '<div class="sub">Tahun ' + hijri.year + ' Hijriah</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="modal-date-row chinese">' +
+                '<div class="icon">🐉</div>' +
+                '<div class="info">' +
+                    '<div class="label">Imlek (Cina)</div>' +
+                    '<div class="value">' + chineseMonths[chinese.month] + ' ' + chinese.day + ', Tahun ' + chinese.year + '</div>' +
+                    '<div class="sub">Shio ' + chinese.yearAnimal + '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="modal-date-row hebrew">' +
+                '<div class="icon">✡️</div>' +
+                '<div class="info">' +
+                    '<div class="label">Ibrani (Hebrew)</div>' +
+                    '<div class="value">' + hebrew.day + ' ' + hebrew.monthName + ' ' + hebrew.year + '</div>' +
+                    '<div class="sub">Tahun ' + hebrew.year + '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="modal-date-row pasaran">' +
+                '<div class="icon">🕉️</div>' +
+                '<div class="info">' +
+                    '<div class="label">Pasaran Jawa</div>' +
+                    '<div class="value">' + weekdays[dayOfWeek] + ' ' + pasaran + '</div>' +
+                    '<div class="sub">Siklus 5 hari: Legi, Pahing, Pon, Wage, Kliwon</div>' +
+                '</div>' +
+            '</div>';
+
             document.getElementById("modalDates").innerHTML = html;
             document.getElementById("modalOverlay").classList.add("show");
         }
@@ -826,61 +809,56 @@
         function searchDate() {
             const input = document.getElementById("searchDate").value;
             if (input) {
-                const date = new Date(input + "T00:00:00");
+                const parts = input.split('-');
+                const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
                 showModal(date);
             }
         }
 
-        // ============================================================
-        // RENDER KARTU HARI INI
-        // ============================================================
         function renderToday() {
             const today = new Date();
             const hijri = gregorianToHijri(today);
             const chinese = gregorianToChinese(today);
             const hebrew = gregorianToHebrew(today);
             const pasaran = getPasaran(today);
-            const html = `
-                <div class="date-box" onclick="showModal(new Date())">
-                    <div class="label">Masehi (Gregorian)</div>
-                    <div class="day-num">${today.getDate()}</div>
-                    <div class="month-year">${gregorianMonths[today.getMonth()]} ${today.getFullYear()}</div>
-                    <div class="weekday">${weekdays[today.getDay()]}</div>
-                    <div class="pasaran">${pasaran}</div>
-                </div>
-                <div class="date-box hijri" onclick="showModal(new Date())">
-                    <div class="label">Hijriah (Islam)</div>
-                    <div class="day-num">${hijri.day}</div>
-                    <div class="month-year">${hijriMonths[hijri.month]}</div>
-                    <div class="weekday">Tahun ${hijri.year} H</div>
-                    <div class="pasaran">${pasaran}</div>
-                </div>
-                <div class="date-box chinese" onclick="showModal(new Date())">
-                    <div class="label">Imlek (Cina)</div>
-                    <div class="day-num">${chinese.day}</div>
-                    <div class="month-year">${chineseMonths[chinese.month]}</div>
-                    <div class="weekday">Tahun ${chinese.year} · Shio ${chinese.yearAnimal}</div>
-                    <div class="pasaran">${pasaran}</div>
-                </div>
-                <div class="date-box hebrew" onclick="showModal(new Date())">
-                    <div class="label">Ibrani (Hebrew)</div>
-                    <div class="day-num">${hebrew.day}</div>
-                    <div class="month-year">${hebrew.monthName}</div>
-                    <div class="weekday">Tahun ${hebrew.year}</div>
-                    <div class="pasaran">${pasaran}</div>
-                </div>
-            `;
+
+            const html = '<div class="date-box" onclick="showModal(new Date());">' +
+                '<div class="label">Masehi (Gregorian)</div>' +
+                '<div class="day-num">' + today.getDate() + '</div>' +
+                '<div class="month-year">' + gregorianMonths[today.getMonth()] + ' ' + today.getFullYear() + '</div>' +
+                '<div class="weekday">' + weekdays[today.getDay()] + '</div>' +
+                '<div class="pasaran">' + pasaran + '</div>' +
+            '</div>' +
+            '<div class="date-box hijri" onclick="showModal(new Date());">' +
+                '<div class="label">Hijriah (Islam)</div>' +
+                '<div class="day-num">' + hijri.day + '</div>' +
+                '<div class="month-year">' + hijriMonths[hijri.month] + '</div>' +
+                '<div class="weekday">Tahun ' + hijri.year + ' H</div>' +
+                '<div class="pasaran">' + pasaran + '</div>' +
+            '</div>' +
+            '<div class="date-box chinese" onclick="showModal(new Date());">' +
+                '<div class="label">Imlek (Cina)</div>' +
+                '<div class="day-num">' + chinese.day + '</div>' +
+                '<div class="month-year">' + chineseMonths[chinese.month] + '</div>' +
+                '<div class="weekday">Tahun ' + chinese.year + ' · Shio ' + chinese.yearAnimal + '</div>' +
+                '<div class="pasaran">' + pasaran + '</div>' +
+            '</div>' +
+            '<div class="date-box hebrew" onclick="showModal(new Date());">' +
+                '<div class="label">Ibrani (Hebrew)</div>' +
+                '<div class="day-num">' + hebrew.day + '</div>' +
+                '<div class="month-year">' + hebrew.monthName + '</div>' +
+                '<div class="weekday">Tahun ' + hebrew.year + '</div>' +
+                '<div class="pasaran">' + pasaran + '</div>' +
+            '</div>';
+
             document.getElementById("todayGrid").innerHTML = html;
         }
 
-        // ============================================================
-        // RENDER KALENDER BULANAN
-        // ============================================================
         function renderCalendar() {
             const year = displayDate.getFullYear();
             const month = displayDate.getMonth();
-            document.getElementById("currentMonth").textContent = `${gregorianMonths[month]} ${year}`;
-            const headerHtml = weekdaysShort.map(d => `<div class="day-header">${d}</div>`).join("");
+            document.getElementById("currentMonth").textContent = gregorianMonths[month] + ' ' + year;
+            const headerHtml = weekdaysShort.map(function(d) { return '<div class="day-header">' + d + '</div>'; }).join("");
             document.getElementById("calendarHeader").innerHTML = headerHtml;
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -915,34 +893,41 @@
             const pasaran = getPasaran(date);
             const dayOfWeek = date.getDay();
             const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-            const dateStr = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
-            const tooltipData = `
-                <div class="tt-row"><span class="tt-label">Masehi</span><span>${dayNum} ${gregorianMonths[date.getMonth()]} ${date.getFullYear()}</span></div>
-                <div class="tt-row"><span class="tt-label">Hijriah</span><span>${hijri.day} ${hijriMonths[hijri.month]} · Tahun ${hijri.year} H</span></div>
-                <div class="tt-row"><span class="tt-label">Imlek</span><span>${chineseMonths[chinese.month]} ${chinese.day} · Tahun ${chinese.year} · Shio ${chinese.yearAnimal}</span></div>
-                <div class="tt-row"><span class="tt-label">Ibrani</span><span>${hebrew.day} ${hebrew.monthName} · Tahun ${hebrew.year}</span></div>
-                <div class="tt-row"><span class="tt-label">Pasaran</span><span>${weekdays[dayOfWeek]} ${pasaran}</span></div>
-            `;
-            return `
-                <div class="day-cell ${isOtherMonth ? "other-month" : ""} ${isToday ? "today" : ""}" data-date="${dateStr}" data-tooltip="${tooltipData.replace(/"/g, "&quot;")}">
-                    ${isWeekend ? "<div class=\"weekend\"></div>" : ""}
-                    <div class="gregorian">${dayNum}</div>
-                    <div class="hijri-small">${hijri.day}</div>
-                    <div class="chinese-small">${chineseMonths[chinese.month].substring(0,3)} ${chinese.day}</div>
-                    <div class="pasaran-small">${pasaran}</div>
-                </div>
-            `;
+            const dateStr = date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0') + '-' + String(date.getDate()).padStart(2,'0');
+
+            return '<div class="day-cell ' + (isOtherMonth ? 'other-month ' : '') + (isToday ? 'today' : '') + '" data-date="' + dateStr + '">' +
+                (isWeekend ? '<div class="weekend"></div>' : '') +
+                '<div class="gregorian">' + dayNum + '</div>' +
+                '<div class="hijri-small">' + hijri.day + '</div>' +
+                '<div class="chinese-small">' + chineseMonths[chinese.month].substring(0,3) + ' ' + chinese.day + '</div>' +
+                '<div class="pasaran-small">' + pasaran + '</div>' +
+            '</div>';
         }
 
         function setupTooltips() {
             const tooltip = document.getElementById("tooltip");
             const cells = document.querySelectorAll(".day-cell");
-            cells.forEach(cell => {
-                cell.addEventListener("mouseenter", (e) => {
-                    const data = cell.getAttribute("data-tooltip");
-                    if (data) { tooltip.innerHTML = data; tooltip.classList.add("show"); }
+            cells.forEach(function(cell) {
+                cell.addEventListener("mouseenter", function(e) {
+                    const dateStr = cell.getAttribute("data-date");
+                    if (dateStr) {
+                        const parts = dateStr.split('-');
+                        const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                        const hijri = gregorianToHijri(date);
+                        const chinese = gregorianToChinese(date);
+                        const hebrew = gregorianToHebrew(date);
+                        const pasaran = getPasaran(date);
+                        const dayOfWeek = date.getDay();
+
+                        tooltip.innerHTML = '<div class="tt-row"><span class="tt-label">Masehi</span><span>' + date.getDate() + ' ' + gregorianMonths[date.getMonth()] + ' ' + date.getFullYear() + '</span></div>' +
+                            '<div class="tt-row"><span class="tt-label">Hijriah</span><span>' + hijri.day + ' ' + hijriMonths[hijri.month] + ' · Tahun ' + hijri.year + ' H</span></div>' +
+                            '<div class="tt-row"><span class="tt-label">Imlek</span><span>' + chineseMonths[chinese.month] + ' ' + chinese.day + ' · Tahun ' + chinese.year + ' · Shio ' + chinese.yearAnimal + '</span></div>' +
+                            '<div class="tt-row"><span class="tt-label">Ibrani</span><span>' + hebrew.day + ' ' + hebrew.monthName + ' · Tahun ' + hebrew.year + '</span></div>' +
+                            '<div class="tt-row"><span class="tt-label">Pasaran</span><span>' + weekdays[dayOfWeek] + ' ' + pasaran + '</span></div>';
+                        tooltip.classList.add("show");
+                    }
                 });
-                cell.addEventListener("mousemove", (e) => {
+                cell.addEventListener("mousemove", function(e) {
                     const x = e.clientX + 15;
                     const y = e.clientY + 15;
                     const rect = tooltip.getBoundingClientRect();
@@ -951,17 +936,18 @@
                     tooltip.style.left = finalX + "px";
                     tooltip.style.top = finalY + "px";
                 });
-                cell.addEventListener("mouseleave", () => { tooltip.classList.remove("show"); });
+                cell.addEventListener("mouseleave", function() { tooltip.classList.remove("show"); });
             });
         }
 
         function setupDayClicks() {
             const cells = document.querySelectorAll(".day-cell");
-            cells.forEach(cell => {
-                cell.addEventListener("click", () => {
+            cells.forEach(function(cell) {
+                cell.addEventListener("click", function() {
                     const dateStr = cell.getAttribute("data-date");
                     if (dateStr) {
-                        const date = new Date(dateStr + "T00:00:00");
+                        const parts = dateStr.split('-');
+                        const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
                         showModal(date);
                     }
                 });
@@ -973,9 +959,6 @@
             renderCalendar();
         }
 
-        // ============================================================
-        // INISIALISASI
-        // ============================================================
         renderToday();
         renderCalendar();
     </script>
