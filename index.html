@@ -402,11 +402,37 @@
             2099: [1,22], 2100: [2,11]
         };
 
-        const chineseMonths = ["\u6B63\u6708","\u4E8C\u6708","\u4E09\u6708","\u56DB\u6708","\u4E94\u6708","\u516D\u6708","\u4E03\u6708","\u516B\u6708","\u4E5D\u6708","\u5341\u6708","\u51AC\u6708","\u814A\u6708"];
-        const chineseDays = ["\u521D\u4E00","\u521D\u4E8C","\u521D\u4E09","\u521D\u56DB","\u521D\u4E94","\u521D\u516D","\u521D\u4E03","\u521D\u516B","\u521D\u4E5D","\u521D\u5341",
-                           "\u5341\u4E00","\u5341\u4E8C","\u5341\u4E09","\u5341\u56DB","\u5341\u4E94","\u5341\u516D","\u5341\u4E03","\u5341\u516B","\u5341\u4E5D","\u4E8C\u5341",
-                           "\u5EFF\u4E00","\u5EFF\u4E8C","\u5EFF\u4E09","\u5EFF\u56DB","\u5EFF\u4E94","\u5EFF\u516D","\u5EFF\u4E03","\u5EFF\u516B","\u5EFF\u4E5D","\u4E09\u5341"];
-        const chineseZodiac = ["\u9F20","\u725B","\u864E","\u5154","\u9F99","\u86C7","\u9A6C","\u7F8A","\u7334","\u9E21","\u72D7","\u732A"];
+        // Nama bulan Imlek dalam bahasa Indonesia/Hokkien
+        const chineseMonths = [
+            "Chiat Gwee",   // 正月 - bulan 1
+            "Di Gwee",      // 二月 - bulan 2
+            "Sa Gwee",      // 三月 - bulan 3
+            "Si Gwee",      // 四月 - bulan 4
+            "Go Gwee",      // 五月 - bulan 5
+            "Lak Gwee",     // 六月 - bulan 6
+            "Chit Gwee",    // 七月 - bulan 7
+            "Pat Gwee",     // 八月 - bulan 8
+            "Kau Gwee",     // 九月 - bulan 9
+            "Chap Gwee",    // 十月 - bulan 10
+            "Chap-it Gwee", // 冬月 - bulan 11
+            "Chap-ji Gwee"  // 腊月 - bulan 12
+        ];
+
+        // Nama hari Imlek
+        const chineseDays = [
+            "Tanggal 1", "Tanggal 2", "Tanggal 3", "Tanggal 4", "Tanggal 5",
+            "Tanggal 6", "Tanggal 7", "Tanggal 8", "Tanggal 9", "Tanggal 10",
+            "Tanggal 11", "Tanggal 12", "Tanggal 13", "Tanggal 14", "Tanggal 15",
+            "Tanggal 16", "Tanggal 17", "Tanggal 18", "Tanggal 19", "Tanggal 20",
+            "Tanggal 21", "Tanggal 22", "Tanggal 23", "Tanggal 24", "Tanggal 25",
+            "Tanggal 26", "Tanggal 27", "Tanggal 28", "Tanggal 29", "Tanggal 30"
+        ];
+
+        // Shio dalam bahasa Indonesia
+        const chineseZodiac = [
+            "Tikus", "Kerbau", "Macan", "Kelinci", "Naga", "Ular",
+            "Kuda", "Kambing", "Monyet", "Ayam", "Anjing", "Babi"
+        ];
 
         // ============================================================
         // DATA KALENDER IBRANI (Hebrew) - Rosh Hashanah 2024-2050
@@ -500,13 +526,15 @@
 
         // ============================================================
         // KONVERSI CINA (Imlek)
+        // Tahun Imlek = tahun Gregorian + 551
+        // 2026 + 551 = 2577
         // ============================================================
         function gregorianToChinese(gregDate) {
             const d = new Date(gregDate);
             const year = d.getFullYear();
             let cnyThisYear = chineseNewYearData[year];
             let cnyPrevYear = chineseNewYearData[year - 1];
-            if (!cnyThisYear) return { day: 1, month: 0, year: year - 1900 + 1, zodiac: 0, yearAnimal: "?" };
+            if (!cnyThisYear) return { day: 1, month: 0, year: year + 551, zodiac: 0, yearAnimal: "?" };
             const cnyDate = new Date(year, cnyThisYear[0] - 1, cnyThisYear[1]);
             let chineseYear, daysSinceCNY;
             if (d < cnyDate) {
@@ -527,8 +555,10 @@
                 chineseDay -= monthLengths[i];
                 chineseMonth = i + 1;
             }
+            // Tahun Imlek = tahun Gregorian + 551
+            const imlekYear = chineseYear + 551;
             const zodiacIndex = ((chineseYear - 4) % 12 + 12) % 12;
-            return { day: chineseDay, month: chineseMonth, year: chineseYear - 1900 + 1, zodiac: zodiacIndex, yearAnimal: chineseZodiac[zodiacIndex] };
+            return { day: chineseDay, month: chineseMonth, year: imlekYear, zodiac: zodiacIndex, yearAnimal: chineseZodiac[zodiacIndex] };
         }
 
         // ============================================================
@@ -661,7 +691,7 @@
                     ${isWeekend ? "<div class=\"weekend\"></div>" : ""}
                     <div class="gregorian">${dayNum}</div>
                     <div class="hijri-small">${hijri.day}</div>
-                    <div class="chinese-small">${chinese.month + 1}/${chinese.day}</div>
+                    <div class="chinese-small">${chineseMonths[chinese.month].substring(0,3)} ${chinese.day}</div>
                     <div class="pasaran-small">${pasaran}</div>
                 </div>
             `;
