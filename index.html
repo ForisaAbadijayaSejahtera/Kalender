@@ -410,7 +410,6 @@
 
         // ============================================================
         // DATA KALENDER IBRANI (Hebrew) - Rosh Hashanah 2024-2050
-        // Sumber: hebcal.com, chabad.org
         // ============================================================
         const hebrewNewYearData = {
             2024: [10,3],   // 1 Tishrei 5785
@@ -448,13 +447,13 @@
         // ============================================================
         // DATA KALENDER HIJRIAH
         // ============================================================
-        const hijriMonths = ['Muharram','Safar','Rabi\'ul Awal','Rabi\'ul Akhir','Jumadil Awal','Jumadil Akhir',
-                              'Rajab','Sya\'ban','Ramadhan','Syawal','Dzulqa\'dah','Dzulhijjah'];
+        const hijriMonths = ['Muharram','Safar','Rabi'ul Awal','Rabi'ul Akhir','Jumadil Awal','Jumadil Akhir',
+                              'Rajab','Sya'ban','Ramadhan','Syawal','Dzulqa'dah','Dzulhijjah'];
 
         // ============================================================
         // HARI PASARAN JAWA
         // Siklus 5 hari: Legi, Pahing, Pon, Wage, Kliwon
-        // Referensi: 1 Januari 1970 = Kliwon
+        // Referensi: 29 Juni 2026 = Senin Pahing (index 1)
         // ============================================================
         const pasaranNames = ['Legi','Pahing','Pon','Wage','Kliwon'];
 
@@ -470,18 +469,17 @@
 
         // ============================================================
         // KONVERSI HARI PASARAN JAWA
-        // Rumus: (daysSinceEpoch + offset) % 5
+        // Referensi: 29 Juni 2026 = Pahing (index 1)
         // ============================================================
         function getPasaran(date) {
-            const epoch = new Date(1970, 0, 1);
-            const diffTime = date - epoch;
+            // Referensi tetap: 29 Juni 2026 = Pahing
+            const refDate = new Date(2026, 5, 29); // 29 Juni 2026
+            const refPasaranIdx = 1; // Pahing
+
+            const diffTime = date - refDate;
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            // 1 Jan 1970 = Kliwon (index 4)
-            // 1 Juli 2026 = Wage (index 3)
-            // diffDays dari 1 Jan 1970 ke 1 Juli 2026 = 20619 hari
-            // 20619 % 5 = 4, sedangkan Wage = index 3
-            // Sehingga perlu offset -1 (atau +4)
-            const pasaranIndex = ((diffDays + 4) % 5 + 5) % 5;
+
+            const pasaranIndex = ((diffDays + refPasaranIdx) % 5 + 5) % 5;
             return pasaranNames[pasaranIndex];
         }
 
@@ -493,22 +491,22 @@
             const d = new Date(gregDate);
             const refDate = new Date(2025, 5, 26); // 26 Juni 2025 = 1 Muharram 1447
             const refYear = 1447;
-            
+
             const diffTime = d - refDate;
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            
+
             let hijriYear = refYear;
             let remainingDays = diffDays;
-            
+
             function isHijriLeap(year) {
                 const rem = year % 30;
                 return [2,5,7,10,13,16,18,21,24,26,29].includes(rem);
             }
-            
+
             function getHijriYearDays(year) {
                 return isHijriLeap(year) ? 355 : 354;
             }
-            
+
             while (remainingDays >= getHijriYearDays(hijriYear)) {
                 remainingDays -= getHijriYearDays(hijriYear);
                 hijriYear++;
@@ -517,15 +515,15 @@
                 hijriYear--;
                 remainingDays += getHijriYearDays(hijriYear);
             }
-            
+
             const monthLengths = [30,29,30,29,30,29,30,29,30,29,30,29];
             if (isHijriLeap(hijriYear)) {
                 monthLengths[11] = 30;
             }
-            
+
             let hijriMonth = 0;
             let hijriDay = remainingDays + 1;
-            
+
             for (let i = 0; i < 12; i++) {
                 if (hijriDay <= monthLengths[i]) {
                     hijriMonth = i;
@@ -534,7 +532,7 @@
                 hijriDay -= monthLengths[i];
                 hijriMonth = i + 1;
             }
-            
+
             return { day: hijriDay, month: hijriMonth, year: hijriYear };
         }
 
@@ -546,19 +544,19 @@
             const year = d.getFullYear();
             const month = d.getMonth();
             const day = d.getDate();
-            
+
             let cnyThisYear = chineseNewYearData[year];
             let cnyNextYear = chineseNewYearData[year + 1];
             let cnyPrevYear = chineseNewYearData[year - 1];
-            
+
             if (!cnyThisYear) {
                 return { day: 1, month: 0, year: year - 1900 + 1, zodiac: 0, yearAnimal: '?' };
             }
-            
+
             const cnyDate = new Date(year, cnyThisYear[0] - 1, cnyThisYear[1]);
-            
+
             let chineseYear, daysSinceCNY;
-            
+
             if (d < cnyDate) {
                 if (cnyPrevYear) {
                     const prevCnyDate = new Date(year - 1, cnyPrevYear[0] - 1, cnyPrevYear[1]);
@@ -572,11 +570,11 @@
                 daysSinceCNY = Math.floor((d - cnyDate) / (1000 * 60 * 60 * 24));
                 chineseYear = year;
             }
-            
+
             const monthLengths = [30,29,30,29,30,29,30,29,30,29,30,29,30];
             let chineseMonth = 0;
             let chineseDay = daysSinceCNY + 1;
-            
+
             for (let i = 0; i < 12; i++) {
                 if (chineseDay <= monthLengths[i]) {
                     chineseMonth = i;
@@ -585,9 +583,9 @@
                 chineseDay -= monthLengths[i];
                 chineseMonth = i + 1;
             }
-            
+
             const zodiacIndex = ((chineseYear - 4) % 12 + 12) % 12;
-            
+
             return { 
                 day: chineseDay, 
                 month: chineseMonth, 
@@ -603,19 +601,19 @@
         function gregorianToHebrew(gregDate) {
             const d = new Date(gregDate);
             const year = d.getFullYear();
-            
+
             let roshThisYear = hebrewNewYearData[year];
             let roshNextYear = hebrewNewYearData[year + 1];
             let roshPrevYear = hebrewNewYearData[year - 1];
-            
+
             if (!roshThisYear) {
                 return { day: 1, month: 0, year: year + 3760, monthName: 'Tishrei' };
             }
-            
+
             const roshDate = new Date(year, roshThisYear[0] - 1, roshThisYear[1]);
-            
+
             let hebrewYear, daysSinceRosh;
-            
+
             if (d < roshDate) {
                 if (roshPrevYear) {
                     const prevRoshDate = new Date(year - 1, roshPrevYear[0] - 1, roshPrevYear[1]);
@@ -629,11 +627,11 @@
                 daysSinceRosh = Math.floor((d - roshDate) / (1000 * 60 * 60 * 24));
                 hebrewYear = year + 3761;
             }
-            
+
             const monthLengths = [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30];
             let hebrewMonth = 0;
             let hebrewDay = daysSinceRosh + 1;
-            
+
             for (let i = 0; i < 13; i++) {
                 if (hebrewDay <= monthLengths[i]) {
                     hebrewMonth = i;
@@ -642,11 +640,11 @@
                 hebrewDay -= monthLengths[i];
                 hebrewMonth = i + 1;
             }
-            
+
             const isLeap = hebrewMonth > 5;
             const months = isLeap && hebrewMonth >= 6 ? hebrewMonthsLeap : hebrewMonths;
             const monthName = months[Math.min(hebrewMonth, months.length - 1)] || 'Tishrei';
-            
+
             return { day: hebrewDay, month: hebrewMonth, year: hebrewYear, monthName: monthName };
         }
 
@@ -659,7 +657,7 @@
             const chinese = gregorianToChinese(today);
             const hebrew = gregorianToHebrew(today);
             const pasaran = getPasaran(today);
-            
+
             const html = `
                 <div class="date-box">
                     <div class="label">Masehi (Gregorian)</div>
@@ -699,39 +697,39 @@
         function renderCalendar() {
             const year = displayDate.getFullYear();
             const month = displayDate.getMonth();
-            
+
             document.getElementById('currentMonth').textContent = `${gregorianMonths[month]} ${year}`;
-            
+
             const headerHtml = weekdaysShort.map(d => `<div class="day-header">${d}</div>`).join('');
             document.getElementById('calendarHeader').innerHTML = headerHtml;
-            
+
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const daysInPrevMonth = new Date(year, month, 0).getDate();
-            
+
             const today = new Date();
             const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
-            
+
             let html = '';
-            
+
             for (let i = firstDay - 1; i >= 0; i--) {
                 const day = daysInPrevMonth - i;
                 const date = new Date(year, month - 1, day);
                 html += renderDayCell(date, day, true);
             }
-            
+
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(year, month, day);
                 html += renderDayCell(date, day, false, isCurrentMonth && today.getDate() === day);
             }
-            
+
             const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
             const remainingCells = totalCells - (firstDay + daysInMonth);
             for (let day = 1; day <= remainingCells; day++) {
                 const date = new Date(year, month + 1, day);
                 html += renderDayCell(date, day, true);
             }
-            
+
             document.getElementById('calendarGrid').innerHTML = html;
             setupTooltips();
         }
@@ -743,7 +741,7 @@
             const pasaran = getPasaran(date);
             const dayOfWeek = date.getDay();
             const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-            
+
             const tooltipData = `
                 <div class="tt-row"><span class="tt-label">Masehi</span><span>${dayNum} ${gregorianMonths[date.getMonth()]} ${date.getFullYear()}</span></div>
                 <div class="tt-row"><span class="tt-label">Hijriah</span><span>${hijri.day} ${hijriMonths[hijri.month]} ${hijri.year} H</span></div>
@@ -751,7 +749,7 @@
                 <div class="tt-row"><span class="tt-label">Ibrani</span><span>${hebrew.day} ${hebrew.monthName} ${hebrew.year}</span></div>
                 <div class="tt-row"><span class="tt-label">Pasaran</span><span>${weekdays[dayOfWeek]} ${pasaran}</span></div>
             `;
-            
+
             return `
                 <div class="day-cell ${isOtherMonth ? 'other-month' : ''} ${isToday ? 'today' : ''}" 
                      data-tooltip="${tooltipData.replace(/"/g, '&quot;')}">
@@ -767,7 +765,7 @@
         function setupTooltips() {
             const tooltip = document.getElementById('tooltip');
             const cells = document.querySelectorAll('.day-cell');
-            
+
             cells.forEach(cell => {
                 cell.addEventListener('mouseenter', (e) => {
                     const data = cell.getAttribute('data-tooltip');
@@ -776,7 +774,7 @@
                         tooltip.classList.add('show');
                     }
                 });
-                
+
                 cell.addEventListener('mousemove', (e) => {
                     const x = e.clientX + 15;
                     const y = e.clientY + 15;
@@ -786,7 +784,7 @@
                     tooltip.style.left = finalX + 'px';
                     tooltip.style.top = finalY + 'px';
                 });
-                
+
                 cell.addEventListener('mouseleave', () => {
                     tooltip.classList.remove('show');
                 });
