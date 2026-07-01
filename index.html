@@ -477,9 +477,12 @@
             const diffTime = date - epoch;
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
             // 1 Jan 1970 = Kliwon (index 4)
-            const pasaranIndex = ((diffDays % 5) + 5) % 5;
-            const mapping = [4, 0, 1, 2, 3]; // Kliwon, Legi, Pahing, Pon, Wage
-            return pasaranNames[mapping[pasaranIndex]];
+            // 1 Juli 2026 = Wage (index 3)
+            // diffDays dari 1 Jan 1970 ke 1 Juli 2026 = 20619 hari
+            // 20619 % 5 = 4, sedangkan Wage = index 3
+            // Sehingga perlu offset -1 (atau +4)
+            const pasaranIndex = ((diffDays + 4) % 5 + 5) % 5;
+            return pasaranNames[pasaranIndex];
         }
 
         // ============================================================
