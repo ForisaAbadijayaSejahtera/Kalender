@@ -380,6 +380,9 @@
     <div class="tooltip" id="tooltip"></div>
 
     <script>
+        // ============================================================
+        // DATA KALENDER CINA (Imlek) - Data astronomi 2024-2100
+        // ============================================================
         const chineseNewYearData = {
             2024: [2,10], 2025: [1,29], 2026: [2,17], 2027: [2,6], 2028: [1,26],
             2029: [2,13], 2030: [2,3], 2031: [1,23], 2032: [2,11], 2033: [1,31],
@@ -399,11 +402,15 @@
             2099: [1,22], 2100: [2,11]
         };
 
-        const chineseMonths = ["正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
-        const chineseDays = ["初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
-                           "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
-                           "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
-        const chineseZodiac = ["鼠","牛","虎","兔","龙","蛇","马","羊","猴","鸡","狗","猪"];
+        const chineseMonths = ["\u6B63\u6708","\u4E8C\u6708","\u4E09\u6708","\u56DB\u6708","\u4E94\u6708","\u516D\u6708","\u4E03\u6708","\u516B\u6708","\u4E5D\u6708","\u5341\u6708","\u51AC\u6708","\u814A\u6708"];
+        const chineseDays = ["\u521D\u4E00","\u521D\u4E8C","\u521D\u4E09","\u521D\u56DB","\u521D\u4E94","\u521D\u516D","\u521D\u4E03","\u521D\u516B","\u521D\u4E5D","\u521D\u5341",
+                           "\u5341\u4E00","\u5341\u4E8C","\u5341\u4E09","\u5341\u56DB","\u5341\u4E94","\u5341\u516D","\u5341\u4E03","\u5341\u516B","\u5341\u4E5D","\u4E8C\u5341",
+                           "\u5EFF\u4E00","\u5EFF\u4E8C","\u5EFF\u4E09","\u5EFF\u56DB","\u5EFF\u4E94","\u5EFF\u516D","\u5EFF\u4E03","\u5EFF\u516B","\u5EFF\u4E5D","\u4E09\u5341"];
+        const chineseZodiac = ["\u9F20","\u725B","\u864E","\u5154","\u9F99","\u86C7","\u9A6C","\u7F8A","\u7334","\u9E21","\u72D7","\u732A"];
+
+        // ============================================================
+        // DATA KALENDER IBRANI (Hebrew) - Rosh Hashanah 2024-2050
+        // ============================================================
         const hebrewNewYearData = {
             2024: [10,3], 2025: [9,23], 2026: [9,12], 2027: [10,2], 2028: [9,21],
             2029: [9,10], 2030: [9,28], 2031: [9,18], 2032: [9,6], 2033: [9,24],
@@ -415,10 +422,23 @@
 
         const hebrewMonths = ["Tishrei","Cheshvan","Kislev","Tevet","Shevat","Adar","Nisan","Iyar","Sivan","Tammuz","Av","Elul"];
         const hebrewMonthsLeap = ["Tishrei","Cheshvan","Kislev","Tevet","Shevat","Adar I","Adar II","Nisan","Iyar","Sivan","Tammuz","Av","Elul"];
-        const hijriMonths = ["Muharram","Safar","Rabi\'ul Awal","Rabi\'ul Akhir","Jumadil Awal","Jumadil Akhir",
-                              "Rajab","Sya\'ban","Ramadhan","Syawal","Dzulqa\'dah","Dzulhijjah"];
+
+        // ============================================================
+        // DATA KALENDER HIJRIAH
+        // ============================================================
+        const hijriMonths = ["Muharram","Safar","Rabi\u0027ul Awal","Rabi\u0027ul Akhir","Jumadil Awal","Jumadil Akhir",
+                              "Rajab","Sya\u0027ban","Ramadhan","Syawal","Dzulqa\u0027dah","Dzulhijjah"];
+
+        // ============================================================
+        // HARI PASARAN JAWA
+        // Siklus 5 hari: Legi, Pahing, Pon, Wage, Kliwon
+        // Referensi: 29 Juni 2026 = Senin Pahing (index 1)
+        // ============================================================
         const pasaranNames = ["Legi","Pahing","Pon","Wage","Kliwon"];
 
+        // ============================================================
+        // UTILITAS UMUM
+        // ============================================================
         let currentDate = new Date();
         let displayDate = new Date();
 
@@ -426,6 +446,10 @@
         const weekdays = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
         const weekdaysShort = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
 
+        // ============================================================
+        // KONVERSI HARI PASARAN JAWA
+        // Referensi: 29 Juni 2026 = Pahing (index 1)
+        // ============================================================
         function getPasaran(date) {
             const refDate = new Date(2026, 5, 29);
             const refPasaranIdx = 1;
@@ -434,6 +458,11 @@
             const pasaranIndex = ((diffDays + refPasaranIdx) % 5 + 5) % 5;
             return pasaranNames[pasaranIndex];
         }
+
+        // ============================================================
+        // KONVERSI HIJRIAH (Algoritma Ummul Qura)
+        // Referensi: 1 Muharram 1447 = 26 Juni 2025
+        // ============================================================
         function gregorianToHijri(gregDate) {
             const d = new Date(gregDate);
             const refDate = new Date(2025, 5, 26);
@@ -469,6 +498,9 @@
             return { day: hijriDay, month: hijriMonth, year: hijriYear };
         }
 
+        // ============================================================
+        // KONVERSI CINA (Imlek)
+        // ============================================================
         function gregorianToChinese(gregDate) {
             const d = new Date(gregDate);
             const year = d.getFullYear();
@@ -499,6 +531,9 @@
             return { day: chineseDay, month: chineseMonth, year: chineseYear - 1900 + 1, zodiac: zodiacIndex, yearAnimal: chineseZodiac[zodiacIndex] };
         }
 
+        // ============================================================
+        // KONVERSI IBRANI (Hebrew)
+        // ============================================================
         function gregorianToHebrew(gregDate) {
             const d = new Date(gregDate);
             const year = d.getFullYear();
@@ -530,6 +565,10 @@
             const monthName = months[Math.min(hebrewMonth, months.length - 1)] || "Tishrei";
             return { day: hebrewDay, month: hebrewMonth, year: hebrewYear, monthName: monthName };
         }
+
+        // ============================================================
+        // RENDER KARTU HARI INI
+        // ============================================================
         function renderToday() {
             const today = new Date();
             const hijri = gregorianToHijri(today);
@@ -547,28 +586,31 @@
                 <div class="date-box hijri">
                     <div class="label">Hijriah (Islam)</div>
                     <div class="day-num">${hijri.day}</div>
-                    <div class="month-year">${hijriMonths[hijri.month]} ${hijri.year} H</div>
-                    <div class="weekday">${weekdays[today.getDay()]}</div>
+                    <div class="month-year">${hijriMonths[hijri.month]}</div>
+                    <div class="weekday">Tahun ${hijri.year} H</div>
                     <div class="pasaran">${pasaran}</div>
                 </div>
                 <div class="date-box chinese">
                     <div class="label">Imlek (Cina)</div>
                     <div class="day-num">${chinese.day}</div>
-                    <div class="month-year">Bulan ${chinese.month + 1} / ${chineseMonths[chinese.month]}</div>
+                    <div class="month-year">${chineseMonths[chinese.month]}</div>
                     <div class="weekday">Tahun ${chinese.year} · Shio ${chinese.yearAnimal}</div>
                     <div class="pasaran">${pasaran}</div>
                 </div>
                 <div class="date-box hebrew">
                     <div class="label">Ibrani (Hebrew)</div>
                     <div class="day-num">${hebrew.day}</div>
-                    <div class="month-year">${hebrew.monthName} ${hebrew.year}</div>
-                    <div class="weekday">${weekdays[today.getDay()]}</div>
+                    <div class="month-year">${hebrew.monthName}</div>
+                    <div class="weekday">Tahun ${hebrew.year}</div>
                     <div class="pasaran">${pasaran}</div>
                 </div>
             `;
             document.getElementById("todayGrid").innerHTML = html;
         }
 
+        // ============================================================
+        // RENDER KALENDER BULANAN
+        // ============================================================
         function renderCalendar() {
             const year = displayDate.getFullYear();
             const month = displayDate.getMonth();
@@ -609,14 +651,14 @@
             const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
             const tooltipData = `
                 <div class="tt-row"><span class="tt-label">Masehi</span><span>${dayNum} ${gregorianMonths[date.getMonth()]} ${date.getFullYear()}</span></div>
-                <div class="tt-row"><span class="tt-label">Hijriah</span><span>${hijri.day} ${hijriMonths[hijri.month]} ${hijri.year} H</span></div>
-                <div class="tt-row"><span class="tt-label">Imlek</span><span>Tgl ${chinese.day} · Bulan ${chinese.month + 1} (${chineseMonths[chinese.month]}) · Tahun ${chinese.year} · Shio ${chinese.yearAnimal}</span></div>
-                <div class="tt-row"><span class="tt-label">Ibrani</span><span>${hebrew.day} ${hebrew.monthName} ${hebrew.year}</span></div>
+                <div class="tt-row"><span class="tt-label">Hijriah</span><span>${hijri.day} ${hijriMonths[hijri.month]} · Tahun ${hijri.year} H</span></div>
+                <div class="tt-row"><span class="tt-label">Imlek</span><span>${chineseMonths[chinese.month]} ${chinese.day} · Tahun ${chinese.year} · Shio ${chinese.yearAnimal}</span></div>
+                <div class="tt-row"><span class="tt-label">Ibrani</span><span>${hebrew.day} ${hebrew.monthName} · Tahun ${hebrew.year}</span></div>
                 <div class="tt-row"><span class="tt-label">Pasaran</span><span>${weekdays[dayOfWeek]} ${pasaran}</span></div>
             `;
             return `
                 <div class="day-cell ${isOtherMonth ? "other-month" : ""} ${isToday ? "today" : ""}" data-tooltip="${tooltipData.replace(/"/g, "&quot;")}">
-                    ${isWeekend ? "<div class="weekend"></div>" : ""}
+                    ${isWeekend ? "<div class=\"weekend\"></div>" : ""}
                     <div class="gregorian">${dayNum}</div>
                     <div class="hijri-small">${hijri.day}</div>
                     <div class="chinese-small">${chinese.month + 1}/${chinese.day}</div>
