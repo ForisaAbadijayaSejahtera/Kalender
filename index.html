@@ -6,498 +6,80 @@
     <title>Kalender 5 Penaung Waktu</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Naskh+Arabic:wght@400;700&family=Noto+Serif+SC:wght@400;700&family=Noto+Serif+Hebrew:wght@400;700&display=swap');
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f0f4f8;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
+        body { font-family: 'Inter', sans-serif; background: #f0f4f8; min-height: 100vh; padding: 20px; }
         .container { max-width: 1400px; margin: 0 auto; }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            font-size: 2rem;
-            color: #1a365d;
-            margin-bottom: 8px;
-        }
-
-        header p {
-            color: #64748b;
-            font-size: 0.95rem;
-        }
-
-        .today-card {
-            background: #1e293b;
-            color: white;
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-
-        .today-card h2 {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0.7;
-            margin-bottom: 20px;
-        }
-
-        .dates-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .date-box {
-            background: rgba(255,255,255,0.08);
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: transform 0.2s, background 0.2s;
-            cursor: pointer;
-        }
-
-        .date-box:hover {
-            transform: translateY(-3px);
-            background: rgba(255,255,255,0.12);
-        }
-
-        .date-box .label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            opacity: 0.6;
-            margin-bottom: 8px;
-        }
-
-        .date-box .day-num {
-            font-size: 2.2rem;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 6px;
-        }
-
-        .date-box .month-year {
-            font-size: 0.95rem;
-            opacity: 0.9;
-        }
-
-        .date-box .weekday {
-            font-size: 0.85rem;
-            opacity: 0.7;
-            margin-top: 4px;
-        }
-
-        .date-box .pasaran {
-            font-size: 0.8rem;
-            color: #fbbf24;
-            margin-top: 6px;
-            font-weight: 600;
-        }
-
-        .hijri .month-year, .hijri .day-num {
-            font-family: 'Noto Naskh Arabic', serif;
-            direction: rtl;
-        }
-
-        .chinese .month-year, .chinese .day-num {
-            font-family: 'Noto Serif SC', serif;
-        }
-
-        .hebrew .month-year, .hebrew .day-num {
-            font-family: 'Noto Serif Hebrew', serif;
-            direction: rtl;
-        }
-
-        .search-box {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .search-box input[type="date"] {
-            padding: 10px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            color: #1e293b;
-            background: white;
-            cursor: pointer;
-            transition: border-color 0.2s;
-        }
-
-        .search-box input[type="date"]:focus {
-            outline: none;
-            border-color: #3b82f6;
-        }
-
-        .search-box button {
-            padding: 10px 24px;
-            background: #3b82f6;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .search-box button:hover {
-            background: #2563eb;
-            transform: scale(1.05);
-        }
-
-        .controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-
-        .controls button {
-            background: white;
-            border: 2px solid #e2e8f0;
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            color: #475569;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .controls button:hover {
-            border-color: #3b82f6;
-            color: #3b82f6;
-            transform: scale(1.05);
-        }
-
-        .controls .current-month {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #1e293b;
-            min-width: 220px;
-            text-align: center;
-        }
-
-        .calendar-wrapper {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-        }
-
-        .calendar-header {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .day-header {
-            text-align: center;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 10px 0;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-        }
-
-        .day-cell {
-            aspect-ratio: 1;
-            border-radius: 14px;
-            padding: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 2px solid transparent;
-            position: relative;
-            min-height: 90px;
-        }
-
-        .day-cell:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-        }
-
-        .day-cell.today {
-            background: #1e293b;
-            color: white;
-            box-shadow: 0 4px 12px rgba(30,41,59,0.3);
-        }
-
-        .day-cell.today:hover {
-            background: #334155;
-        }
-
-        .day-cell.other-month {
-            opacity: 0.35;
-        }
-
-        .day-cell .gregorian {
-            font-size: 1.1rem;
-            font-weight: 600;
-            line-height: 1;
-        }
-
-        .day-cell .hijri-small {
-            font-family: 'Noto Naskh Arabic', serif;
-            font-size: 0.65rem;
-            opacity: 0.7;
-            margin-top: 2px;
-            direction: rtl;
-        }
-
-        .day-cell .chinese-small {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.55rem;
-            opacity: 0.6;
-            margin-top: 1px;
-            font-weight: 500;
-        }
-
-        .day-cell .pasaran-small {
-            font-size: 0.55rem;
-            font-weight: 600;
-            color: #d97706;
-            margin-top: 2px;
-            letter-spacing: 0.5px;
-        }
-
-        .day-cell.today .hijri-small,
-        .day-cell.today .chinese-small {
-            opacity: 0.9;
-        }
-
-        .day-cell.today .pasaran-small {
-            color: #fbbf24;
-        }
-
-        .day-cell .weekend {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #ef4444;
-        }
-
-        .day-cell.today .weekend {
-            background: #f87171;
-        }
-
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            font-size: 0.8rem;
-            color: #64748b;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .legend-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-
-        .tooltip {
-            position: fixed;
-            background: #1e293b;
-            color: white;
-            padding: 14px 18px;
-            border-radius: 14px;
-            font-size: 0.85rem;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s;
-            z-index: 1000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            max-width: 300px;
-            line-height: 1.7;
-        }
-
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { font-size: 2rem; color: #1a365d; margin-bottom: 8px; }
+        header p { color: #64748b; font-size: 0.95rem; }
+        .today-card { background: #1e293b; color: white; border-radius: 20px; padding: 30px; margin-bottom: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .today-card h2 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 20px; }
+        .dates-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .date-box { background: rgba(255,255,255,0.08); border-radius: 16px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.2s, background 0.2s; cursor: pointer; }
+        .date-box:hover { transform: translateY(-3px); background: rgba(255,255,255,0.12); }
+        .date-box .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.6; margin-bottom: 8px; }
+        .date-box .day-num { font-size: 2.2rem; font-weight: 700; line-height: 1; margin-bottom: 6px; }
+        .date-box .month-year { font-size: 0.95rem; opacity: 0.9; }
+        .date-box .weekday { font-size: 0.85rem; opacity: 0.7; margin-top: 4px; }
+        .date-box .pasaran { font-size: 0.8rem; color: #fbbf24; margin-top: 6px; font-weight: 600; }
+        .hijri .month-year, .hijri .day-num { font-family: 'Noto Naskh Arabic', serif; direction: rtl; }
+        .chinese .month-year, .chinese .day-num { font-family: 'Noto Serif SC', serif; }
+        .hebrew .month-year, .hebrew .day-num { font-family: 'Noto Serif Hebrew', serif; direction: rtl; }
+        .search-box { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .search-box input[type="date"] { padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; font-family: 'Inter', sans-serif; color: #1e293b; background: white; cursor: pointer; transition: border-color 0.2s; }
+        .search-box input[type="date"]:focus { outline: none; border-color: #3b82f6; }
+        .search-box button { padding: 10px 24px; background: #3b82f6; color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .search-box button:hover { background: #2563eb; transform: scale(1.05); }
+        .controls { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .controls button { background: white; border: 2px solid #e2e8f0; width: 44px; height: 44px; border-radius: 12px; cursor: pointer; font-size: 1.2rem; color: #475569; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .controls button:hover { border-color: #3b82f6; color: #3b82f6; transform: scale(1.05); }
+        .controls .current-month { font-size: 1.3rem; font-weight: 600; color: #1e293b; min-width: 220px; text-align: center; }
+        .calendar-wrapper { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        .calendar-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 12px; }
+        .day-header { text-align: center; font-size: 0.8rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; padding: 10px 0; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+        .day-cell { aspect-ratio: 1; border-radius: 14px; padding: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; position: relative; min-height: 90px; }
+        .day-cell:hover { background: #f1f5f9; border-color: #cbd5e1; }
+        .day-cell.today { background: #1e293b; color: white; box-shadow: 0 4px 12px rgba(30,41,59,0.3); }
+        .day-cell.today:hover { background: #334155; }
+        .day-cell.other-month { opacity: 0.35; }
+        .day-cell .gregorian { font-size: 1.1rem; font-weight: 600; line-height: 1; }
+        .day-cell .hijri-small { font-family: 'Noto Naskh Arabic', serif; font-size: 0.65rem; opacity: 0.7; margin-top: 2px; direction: rtl; }
+        .day-cell .chinese-small { font-family: 'Inter', sans-serif; font-size: 0.55rem; opacity: 0.6; margin-top: 1px; font-weight: 500; }
+        .day-cell .pasaran-small { font-size: 0.55rem; font-weight: 600; color: #d97706; margin-top: 2px; letter-spacing: 0.5px; }
+        .day-cell.today .hijri-small, .day-cell.today .chinese-small { opacity: 0.9; }
+        .day-cell.today .pasaran-small { color: #fbbf24; }
+        .day-cell .weekend { position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: #ef4444; }
+        .day-cell.today .weekend { background: #f87171; }
+        .legend { display: flex; justify-content: center; gap: 25px; margin-top: 20px; flex-wrap: wrap; font-size: 0.8rem; color: #64748b; }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .tooltip { position: fixed; background: #1e293b; color: white; padding: 14px 18px; border-radius: 14px; font-size: 0.85rem; pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 300px; line-height: 1.7; }
         .tooltip.show { opacity: 1; }
-
-        .tooltip .tt-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-        }
-
-        .tooltip .tt-label {
-            opacity: 0.6;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-
-        .modal-overlay.show {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal {
-            background: white;
-            border-radius: 24px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-            transform: scale(0.9);
-            transition: transform 0.3s;
-        }
-
-        .modal-overlay.show .modal {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-header h3 {
-            font-size: 1.3rem;
-            color: #1e293b;
-        }
-
-        .modal-close {
-            background: #f1f5f9;
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            color: #64748b;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .modal-close:hover {
-            background: #e2e8f0;
-            color: #1e293b;
-        }
-
-        .modal-dates {
-            display: grid;
-            gap: 12px;
-        }
-
-        .modal-date-row {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 14px 16px;
-            border-radius: 14px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-        }
-
-        .modal-date-row .icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-
+        .tooltip .tt-row { display: flex; justify-content: space-between; gap: 15px; }
+        .tooltip .tt-label { opacity: 0.6; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .modal-overlay.show { opacity: 1; pointer-events: all; }
+        .modal { background: white; border-radius: 24px; padding: 30px; max-width: 500px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.2); transform: scale(0.9); transition: transform 0.3s; }
+        .modal-overlay.show .modal { transform: scale(1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header h3 { font-size: 1.3rem; color: #1e293b; }
+        .modal-close { background: #f1f5f9; border: none; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; font-size: 1.2rem; color: #64748b; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .modal-close:hover { background: #e2e8f0; color: #1e293b; }
+        .modal-dates { display: grid; gap: 12px; }
+        .modal-date-row { display: flex; align-items: center; gap: 15px; padding: 14px 16px; border-radius: 14px; background: #f8fafc; border: 1px solid #e2e8f0; }
+        .modal-date-row .icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
         .modal-date-row.masehi .icon { background: #dbeafe; }
         .modal-date-row.hijri .icon { background: #dcfce7; }
         .modal-date-row.chinese .icon { background: #fef3c7; }
         .modal-date-row.hebrew .icon { background: #f3e8ff; }
         .modal-date-row.pasaran .icon { background: #ffedd5; }
-
-        .modal-date-row .info {
-            flex: 1;
-        }
-
-        .modal-date-row .info .label {
-            font-size: 0.75rem;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 2px;
-        }
-
-        .modal-date-row .info .value {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        .modal-date-row .info .sub {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin-top: 2px;
-        }
-
+        .modal-date-row .info { flex: 1; }
+        .modal-date-row .info .label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+        .modal-date-row .info .value { font-size: 1rem; font-weight: 600; color: #1e293b; }
+        .modal-date-row .info .sub { font-size: 0.85rem; color: #64748b; margin-top: 2px; }
         @media (max-width: 768px) {
-            .day-cell {
-                min-height: 65px;
-                padding: 4px;
-            }
+            .day-cell { min-height: 65px; padding: 4px; }
             .day-cell .gregorian { font-size: 0.85rem; }
             .day-cell .hijri-small, .day-cell .chinese-small { font-size: 0.45rem; }
             .day-cell .pasaran-small { font-size: 0.45rem; }
@@ -514,45 +96,30 @@
             <h1>📅 Kalender 5 Penaung Waktu</h1>
             <p>Masehi • Hijriah • Imlek (Cina) • Ibrani • Pasaran Jawa</p>
         </header>
-
         <div class="today-card">
             <h2>Hari Ini</h2>
             <div class="dates-grid" id="todayGrid"></div>
         </div>
-
         <div class="search-box">
             <input type="date" id="searchDate" value="2026-07-01">
             <button onclick="searchDate()">🔍 Cari Tanggal</button>
         </div>
-
         <div class="controls">
             <button onclick="changeMonth(-1)">◀</button>
             <div class="current-month" id="currentMonth"></div>
             <button onclick="changeMonth(1)">▶</button>
         </div>
-
         <div class="calendar-wrapper">
             <div class="calendar-header" id="calendarHeader"></div>
             <div class="calendar-grid" id="calendarGrid"></div>
             <div class="legend">
-                <div class="legend-item">
-                    <div class="legend-dot" style="background:#1e293b"></div>
-                    <span>Hari Ini</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-dot" style="background:#ef4444"></div>
-                    <span>Akhir Pekan</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-dot" style="background:#d97706"></div>
-                    <span>Pasaran Jawa</span>
-                </div>
+                <div class="legend-item"><div class="legend-dot" style="background:#1e293b"></div><span>Hari Ini</span></div>
+                <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div><span>Akhir Pekan</span></div>
+                <div class="legend-item"><div class="legend-dot" style="background:#d97706"></div><span>Pasaran Jawa</span></div>
             </div>
         </div>
     </div>
-
     <div class="tooltip" id="tooltip"></div>
-
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
         <div class="modal" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -562,405 +129,563 @@
             <div class="modal-dates" id="modalDates"></div>
         </div>
     </div>
-
     <script>
-        const chineseNewYearData = {
-            2024: [2,10], 2025: [1,29], 2026: [2,17], 2027: [2,6], 2028: [1,26],
-            2029: [2,13], 2030: [2,3], 2031: [1,23], 2032: [2,11], 2033: [1,31],
-            2034: [2,19], 2035: [2,8], 2036: [1,28], 2037: [2,15], 2038: [2,4],
-            2039: [1,24], 2040: [2,12], 2041: [2,1], 2042: [1,22], 2043: [2,10],
-            2044: [1,30], 2045: [2,17], 2046: [2,6], 2047: [1,26], 2048: [2,14],
-            2049: [2,2], 2050: [1,23], 2051: [2,11], 2052: [2,1], 2053: [2,19],
-            2054: [2,8], 2055: [1,28], 2056: [2,15], 2057: [2,4], 2058: [1,24],
-            2059: [2,12], 2060: [2,2], 2061: [1,21], 2062: [2,9], 2063: [1,29],
-            2064: [2,17], 2065: [2,5], 2066: [1,26], 2067: [2,14], 2068: [2,3],
-            2069: [1,23], 2070: [2,11], 2071: [2,1], 2072: [2,19], 2073: [2,7],
-            2074: [1,27], 2075: [2,15], 2076: [2,5], 2077: [1,24], 2078: [2,12],
-            2079: [2,2], 2080: [1,22], 2081: [2,9], 2082: [1,29], 2083: [2,17],
-            2084: [2,6], 2085: [1,26], 2086: [2,14], 2087: [2,3], 2088: [1,24],
-            2089: [2,10], 2090: [1,30], 2091: [2,18], 2092: [2,7], 2093: [1,27],
-            2094: [2,15], 2095: [2,5], 2096: [1,25], 2097: [2,12], 2098: [2,2],
-            2099: [1,22], 2100: [2,11]
-        };
+        // ========== DATA CHINESE NEW YEAR (1900-2100) ==========
+const chineseNewYearData = {
+    1900: [1,31], 1901: [2,19], 1902: [2,8], 1903: [1,29], 1904: [2,16],
+    1905: [2,4], 1906: [1,25], 1907: [2,13], 1908: [2,2], 1909: [1,22],
+    1910: [2,10], 1911: [1,30], 1912: [2,18], 1913: [2,6], 1914: [1,26],
+    1915: [2,14], 1916: [2,3], 1917: [1,23], 1918: [2,11], 1919: [2,1],
+    1920: [2,20], 1921: [2,8], 1922: [1,28], 1923: [2,16], 1924: [2,5],
+    1925: [1,24], 1926: [2,13], 1927: [2,2], 1928: [1,23], 1929: [2,10],
+    1930: [1,30], 1931: [2,17], 1932: [2,6], 1933: [1,26], 1934: [2,14],
+    1935: [2,4], 1936: [1,24], 1937: [2,11], 1938: [1,31], 1939: [2,19],
+    1940: [2,8], 1941: [1,27], 1942: [2,15], 1943: [2,5], 1944: [1,25],
+    1945: [2,13], 1946: [2,2], 1947: [1,22], 1948: [2,10], 1949: [1,29],
+    1950: [2,17], 1951: [2,6], 1952: [1,27], 1953: [2,14], 1954: [2,3],
+    1955: [1,24], 1956: [2,12], 1957: [1,31], 1958: [2,18], 1959: [2,8],
+    1960: [1,28], 1961: [2,15], 1962: [2,5], 1963: [1,25], 1964: [2,13],
+    1965: [2,2], 1966: [1,21], 1967: [2,9], 1968: [1,30], 1969: [2,17],
+    1970: [2,6], 1971: [1,27], 1972: [2,15], 1973: [2,3], 1974: [1,23],
+    1975: [2,11], 1976: [1,31], 1977: [2,18], 1978: [2,7], 1979: [1,28],
+    1980: [2,16], 1981: [2,5], 1982: [1,25], 1983: [2,13], 1984: [2,2],
+    1985: [2,20], 1986: [2,9], 1987: [1,29], 1988: [2,17], 1989: [2,6],
+    1990: [1,27], 1991: [2,15], 1992: [2,4], 1993: [1,23], 1994: [2,10],
+    1995: [1,31], 1996: [2,19], 1997: [2,7], 1998: [1,28], 1999: [2,16],
+    2000: [2,5], 2001: [1,24], 2002: [2,12], 2003: [2,1], 2004: [1,22],
+    2005: [2,9], 2006: [1,29], 2007: [2,18], 2008: [2,7], 2009: [1,26],
+    2010: [2,14], 2011: [2,3], 2012: [1,23], 2013: [2,10], 2014: [1,31],
+    2015: [2,19], 2016: [2,8], 2017: [1,28], 2018: [2,16], 2019: [2,5],
+    2020: [1,25], 2021: [2,12], 2022: [2,1], 2023: [1,22], 2024: [2,10],
+    2025: [1,29], 2026: [2,17], 2027: [2,6], 2028: [1,26], 2029: [2,13],
+    2030: [2,3], 2031: [1,23], 2032: [2,11], 2033: [1,31], 2034: [2,19],
+    2035: [2,8], 2036: [1,28], 2037: [2,15], 2038: [2,4], 2039: [1,24],
+    2040: [2,12], 2041: [2,1], 2042: [1,22], 2043: [2,10], 2044: [1,30],
+    2045: [2,17], 2046: [2,6], 2047: [1,26], 2048: [2,14], 2049: [2,2],
+    2050: [1,23], 2051: [2,11], 2052: [2,1], 2053: [2,19], 2054: [2,8],
+    2055: [1,28], 2056: [2,15], 2057: [2,4], 2058: [1,24], 2059: [2,12],
+    2060: [2,2], 2061: [1,21], 2062: [2,9], 2063: [1,29], 2064: [2,17],
+    2065: [2,5], 2066: [1,26], 2067: [2,14], 2068: [2,3], 2069: [1,23],
+    2070: [2,11], 2071: [2,1], 2072: [2,19], 2073: [2,7], 2074: [1,27],
+    2075: [2,15], 2076: [2,5], 2077: [1,24], 2078: [2,12], 2079: [2,2],
+    2080: [1,22], 2081: [2,9], 2082: [1,29], 2083: [2,17], 2084: [2,6],
+    2085: [1,26], 2086: [2,14], 2087: [2,3], 2088: [1,24], 2089: [2,10],
+    2090: [1,30], 2091: [2,18], 2092: [2,7], 2093: [1,27], 2094: [2,15],
+    2095: [2,5], 2096: [1,25], 2097: [2,12], 2098: [2,2], 2099: [1,22],
+    2100: [2,11]
+};
 
-        const chineseMonths = [
-            "Chiat Gwee", "Di Gwee", "Sa Gwee", "Si Gwee", "Go Gwee", "Lak Gwee",
-            "Chit Gwee", "Pat Gwee", "Kau Gwee", "Chap Gwee", "Chap-it Gwee", "Chap-ji Gwee"
-        ];
+// ========== DATA ROSH HASHANAH IBRANI (1900-2100) ==========
+const hebrewNewYearData = {
+    1900: [9,20], 1901: [9,10], 1902: [9,30], 1903: [9,19], 1904: [9,7],
+    1905: [9,26], 1906: [9,16], 1907: [10,5], 1908: [9,23], 1909: [9,13],
+    1910: [10,1], 1911: [9,21], 1912: [9,9], 1913: [9,28], 1914: [9,18],
+    1915: [9,6], 1916: [9,25], 1917: [9,14], 1918: [10,3], 1919: [9,22],
+    1920: [9,10], 1921: [9,29], 1922: [9,19], 1923: [9,8], 1924: [9,26],
+    1925: [9,15], 1926: [10,4], 1927: [9,24], 1928: [9,12], 1929: [10,1],
+    1930: [9,20], 1931: [9,9], 1932: [9,27], 1933: [9,17], 1934: [9,6],
+    1935: [9,25], 1936: [9,14], 1937: [10,3], 1938: [9,22], 1939: [9,11],
+    1940: [9,29], 1941: [9,19], 1942: [9,8], 1943: [9,26], 1944: [9,15],
+    1945: [10,4], 1946: [9,24], 1947: [9,13], 1948: [10,1], 1949: [9,21],
+    1950: [9,10], 1951: [9,29], 1952: [9,17], 1953: [9,7], 1954: [9,26],
+    1955: [9,15], 1956: [10,3], 1957: [9,23], 1958: [9,12], 1959: [10,1],
+    1960: [9,20], 1961: [9,8], 1962: [9,27], 1963: [9,17], 1964: [9,5],
+    1965: [9,24], 1966: [9,14], 1967: [10,3], 1968: [9,21], 1969: [9,11],
+    1970: [9,30], 1971: [9,19], 1972: [9,8], 1973: [9,27], 1974: [9,16],
+    1975: [10,5], 1976: [9,25], 1977: [9,13], 1978: [10,2], 1979: [9,22],
+    1980: [9,11], 1981: [9,29], 1982: [9,18], 1983: [9,8], 1984: [9,27],
+    1985: [9,16], 1986: [10,4], 1987: [9,24], 1988: [9,12], 1989: [10,1],
+    1990: [9,20], 1991: [9,9], 1992: [9,28], 1993: [9,16], 1994: [9,6],
+    1995: [9,25], 1996: [9,14], 1997: [10,2], 1998: [9,21], 1999: [9,11],
+    2000: [9,30], 2001: [9,18], 2002: [9,7], 2003: [9,27], 2004: [9,16],
+    2005: [10,4], 2006: [9,23], 2007: [9,13], 2008: [9,30], 2009: [9,19],
+    2010: [9,9], 2011: [9,29], 2012: [9,17], 2013: [9,5], 2014: [9,25],
+    2015: [9,14], 2016: [10,3], 2017: [9,21], 2018: [9,10], 2019: [9,30],
+    2020: [9,19], 2021: [9,7], 2022: [9,26], 2023: [9,16], 2024: [10,3],
+    2025: [9,23], 2026: [9,12], 2027: [10,2], 2028: [9,21], 2029: [9,10],
+    2030: [9,28], 2031: [9,18], 2032: [9,6], 2033: [9,24], 2034: [9,14],
+    2035: [10,4], 2036: [9,22], 2037: [9,12], 2038: [10,1], 2039: [9,21],
+    2040: [9,8], 2041: [9,28], 2042: [9,17], 2043: [9,5], 2044: [9,25],
+    2045: [9,13], 2046: [10,3], 2047: [9,23], 2048: [9,11], 2049: [10,1],
+    2050: [9,19], 2051: [9,9], 2052: [9,27], 2053: [9,17], 2054: [9,6],
+    2055: [9,25], 2056: [9,14], 2057: [10,2], 2058: [9,22], 2059: [9,11],
+    2060: [9,29], 2061: [9,19], 2062: [9,8], 2063: [9,27], 2064: [9,15],
+    2065: [10,4], 2066: [9,24], 2067: [9,13], 2068: [10,1], 2069: [9,21],
+    2070: [9,10], 2071: [9,29], 2072: [9,17], 2073: [9,7], 2074: [9,26],
+    2075: [9,15], 2076: [10,3], 2077: [9,23], 2078: [9,12], 2079: [10,1],
+    2080: [9,20], 2081: [9,8], 2082: [9,27], 2083: [9,17], 2084: [9,5],
+    2085: [9,24], 2086: [9,14], 2087: [10,3], 2088: [9,21], 2089: [9,11],
+    2090: [9,30], 2091: [9,19], 2092: [9,8], 2093: [9,27], 2094: [9,16],
+    2095: [10,5], 2096: [9,25], 2097: [9,13], 2098: [10,2], 2099: [9,22],
+    2100: [9,11]
+};
 
-        const chineseZodiac = [
-            "Tikus", "Kerbau", "Macan", "Kelinci", "Naga", "Ular",
-            "Kuda", "Kambing", "Monyet", "Ayam", "Anjing", "Babi"
-        ];
+const chineseMonths = ["Chiat Gwee","Di Gwee","Sa Gwee","Si Gwee","Go Gwee","Lak Gwee",
+    "Chit Gwee","Pat Gwee","Kau Gwee","Chap Gwee","Chap-it Gwee","Chap-ji Gwee"];
+const chineseZodiac = ["Tikus","Kerbau","Macan","Kelinci","Naga","Ular",
+    "Kuda","Kambing","Monyet","Ayam","Anjing","Babi"];
 
-        const hebrewNewYearData = {
-            2024: [10,3], 2025: [9,23], 2026: [9,12], 2027: [10,2], 2028: [9,21],
-            2029: [9,10], 2030: [9,28], 2031: [9,18], 2032: [9,6], 2033: [9,24],
-            2034: [9,14], 2035: [10,4], 2036: [9,22], 2037: [9,12], 2038: [10,1],
-            2039: [9,21], 2040: [9,8], 2041: [9,28], 2042: [9,17], 2043: [9,5],
-            2044: [9,25], 2045: [9,13], 2046: [10,3], 2047: [9,23], 2048: [9,11],
-            2049: [10,1], 2050: [9,19]
-        };
+const hebrewMonths = ["Tishrei","Cheshvan","Kislev","Tevet","Shevat","Adar",
+    "Nisan","Iyar","Sivan","Tammuz","Av","Elul"];
+const hebrewMonthsLeap = ["Tishrei","Cheshvan","Kislev","Tevet","Shevat","Adar I",
+    "Adar II","Nisan","Iyar","Sivan","Tammuz","Av","Elul"];
 
-        const hebrewMonths = ["Tishrei","Cheshvan","Kislev","Tevet","Shevat","Adar","Nisan","Iyar","Sivan","Tammuz","Av","Elul"];
-        const hebrewMonthsLeap = ["Tishrei","Cheshvan","Kislev","Tevet","Shevat","Adar I","Adar II","Nisan","Iyar","Sivan","Tammuz","Av","Elul"];
+const hijriMonths = ["Muharram","Safar","Rabi'ul Awal","Rabi'ul Akhir","Jumadil Awal","Jumadil Akhir",
+    "Rajab","Sya'ban","Ramadhan","Syawal","Dzulqa'dah","Dzulhijjah"];
 
-        const hijriMonths = ["Muharram","Safar","Rabi\u0027ul Awal","Rabi\u0027ul Akhir","Jumadil Awal","Jumadil Akhir",
-                              "Rajab","Sya\u0027ban","Ramadhan","Syawal","Dzulqa\u0027dah","Dzulhijjah"];
+const pasaranNames = ["Legi","Pahing","Pon","Wage","Kliwon"];
 
-        const pasaranNames = ["Legi","Pahing","Pon","Wage","Kliwon"];
+let currentDate = new Date();
+let displayDate = new Date();
 
-        let currentDate = new Date();
-        let displayDate = new Date();
+const gregorianMonths = ["Januari","Februari","Maret","April","Mei","Juni","Juli",
+    "Agustus","September","Oktober","November","Desember"];
+const weekdays = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+const weekdaysShort = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
 
-        const gregorianMonths = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
-        const weekdays = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
-        const weekdaysShort = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
+// ========== FUNGSI UTAMA ==========
 
-        function getPasaran(date) {
-            const refDate = new Date(2026, 5, 29);
-            const refPasaranIdx = 1;
-            const diffTime = date - refDate;
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            const pasaranIndex = ((diffDays + refPasaranIdx) % 5 + 5) % 5;
-            return pasaranNames[pasaranIndex];
+function getPasaran(date) {
+    const refDate = new Date(2026, 5, 29);
+    const refPasaranIdx = 1;
+    const diffTime = date - refDate;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    const pasaranIndex = ((diffDays + refPasaranIdx) % 5 + 5) % 5;
+    return pasaranNames[pasaranIndex];
+}
+
+function gregorianToHijri(gregDate) {
+    const d = new Date(gregDate);
+    const refDate = new Date(2025, 5, 26);
+    const refYear = 1447;
+    const diffTime = d - refDate;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    let hijriYear = refYear;
+    let remainingDays = diffDays;
+    function isHijriLeap(year) {
+        const rem = year % 30;
+        return [2,5,7,10,13,16,18,21,24,26,29].includes(rem);
+    }
+    function getHijriYearDays(year) {
+        return isHijriLeap(year) ? 355 : 354;
+    }
+    while (remainingDays >= getHijriYearDays(hijriYear)) {
+        remainingDays -= getHijriYearDays(hijriYear);
+        hijriYear++;
+    }
+    while (remainingDays < 0) {
+        hijriYear--;
+        remainingDays += getHijriYearDays(hijriYear);
+    }
+    const monthLengths = [30,29,30,29,30,29,30,29,30,29,30,29];
+    if (isHijriLeap(hijriYear)) monthLengths[11] = 30;
+    let hijriMonth = 0;
+    let hijriDay = remainingDays + 1;
+    for (let i = 0; i < 12; i++) {
+        if (hijriDay <= monthLengths[i]) { hijriMonth = i; break; }
+        hijriDay -= monthLengths[i];
+        hijriMonth = i + 1;
+    }
+    return { day: hijriDay, month: hijriMonth, year: hijriYear };
+}
+
+// ========== FUNGSI CHINESE CALENDAR (DIPERBAIKI) ==========
+function gregorianToChinese(gregDate) {
+    const d = new Date(gregDate);
+    const year = d.getFullYear();
+    const month = d.getMonth();
+    const day = d.getDate();
+
+    let cnyThisYear = chineseNewYearData[year];
+    let cnyPrevYear = chineseNewYearData[year - 1];
+
+    if (!cnyThisYear) {
+        return { day: 1, month: 0, year: year + 2697, zodiac: 0, yearAnimal: "?" };
+    }
+
+    const cnyDate = new Date(year, cnyThisYear[0] - 1, cnyThisYear[1]);
+    let chineseYear, daysSinceCNY;
+
+    if (d < cnyDate) {
+        if (cnyPrevYear) {
+            const prevCnyDate = new Date(year - 1, cnyPrevYear[0] - 1, cnyPrevYear[1]);
+            daysSinceCNY = Math.floor((d - prevCnyDate) / (1000 * 60 * 60 * 24));
+            chineseYear = year - 1;
+        } else {
+            daysSinceCNY = 0;
+            chineseYear = year;
         }
+    } else {
+        daysSinceCNY = Math.floor((d - cnyDate) / (1000 * 60 * 60 * 24));
+        chineseYear = year;
+    }
 
-        function gregorianToHijri(gregDate) {
-            const d = new Date(gregDate);
-            const refDate = new Date(2025, 5, 26);
-            const refYear = 1447;
-            const diffTime = d - refDate;
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            let hijriYear = refYear;
-            let remainingDays = diffDays;
-            function isHijriLeap(year) {
-                const rem = year % 30;
-                return [2,5,7,10,13,16,18,21,24,26,29].includes(rem);
-            }
-            function getHijriYearDays(year) {
-                return isHijriLeap(year) ? 355 : 354;
-            }
-            while (remainingDays >= getHijriYearDays(hijriYear)) {
-                remainingDays -= getHijriYearDays(hijriYear);
-                hijriYear++;
-            }
-            while (remainingDays < 0) {
-                hijriYear--;
-                remainingDays += getHijriYearDays(hijriYear);
-            }
-            const monthLengths = [30,29,30,29,30,29,30,29,30,29,30,29];
-            if (isHijriLeap(hijriYear)) monthLengths[11] = 30;
-            let hijriMonth = 0;
-            let hijriDay = remainingDays + 1;
-            for (let i = 0; i < 12; i++) {
-                if (hijriDay <= monthLengths[i]) { hijriMonth = i; break; }
-                hijriDay -= monthLengths[i];
-                hijriMonth = i + 1;
-            }
-            return { day: hijriDay, month: hijriMonth, year: hijriYear };
+    // Chinese months alternate 30,29,30,29... approximately
+    // But this is simplified - actual Chinese calendar uses astronomical new moons
+    const monthLengths = [30,29,30,29,30,29,30,29,30,29,30,29,30];
+    let chineseMonth = 0;
+    let chineseDay = daysSinceCNY + 1;
+
+    for (let i = 0; i < 12; i++) {
+        if (chineseDay <= monthLengths[i]) {
+            chineseMonth = i;
+            break;
         }
+        chineseDay -= monthLengths[i];
+        chineseMonth = i + 1;
+    }
 
-        function gregorianToChinese(gregDate) {
-            const d = new Date(gregDate);
-            const year = d.getFullYear();
-            const month = d.getMonth();
-            const day = d.getDate();
+    const imlekYear = chineseYear + 2697;
+    const zodiacIndex = ((chineseYear - 4) % 12 + 12) % 12;
 
-            let cnyThisYear = chineseNewYearData[year];
-            let cnyPrevYear = chineseNewYearData[year - 1];
+    return { 
+        day: chineseDay, 
+        month: chineseMonth, 
+        year: imlekYear, 
+        zodiac: zodiacIndex, 
+        yearAnimal: chineseZodiac[zodiacIndex] 
+    };
+}
 
-            if (!cnyThisYear) {
-                return { day: 1, month: 0, year: year + 551, zodiac: 0, yearAnimal: "?" };
-            }
+// ========== FUNGSI HEBREW CALENDAR (DIPERBAIKI TOTAL) ==========
 
-            const cnyDate = new Date(year, cnyThisYear[0] - 1, cnyThisYear[1]);
+// Pre-computed Hebrew year month lengths based on Rosh Hashanah dates
+function getHebrewYearInfo(hebrewYear) {
+    // Determine if leap year (19-year cycle: 3,6,8,11,14,17,19)
+    const cycleYear = ((hebrewYear - 1) % 19) + 1;
+    const isLeap = [3,6,8,11,14,17,19].includes(cycleYear);
+    return { isLeap: isLeap };
+}
 
-            let chineseYear, daysSinceCNY;
-
-            if (d < cnyDate) {
-                if (cnyPrevYear) {
-                    const prevCnyDate = new Date(year - 1, cnyPrevYear[0] - 1, cnyPrevYear[1]);
-                    daysSinceCNY = Math.floor((d - prevCnyDate) / (1000 * 60 * 60 * 24));
-                    chineseYear = year - 1;
-                } else {
-                    daysSinceCNY = 0;
-                    chineseYear = year;
-                }
-            } else {
-                daysSinceCNY = Math.floor((d - cnyDate) / (1000 * 60 * 60 * 24));
-                chineseYear = year;
-            }
-
-            const monthLengths = [30,29,30,29,30,29,30,29,30,29,30,29,30];
-            let chineseMonth = 0;
-            let chineseDay = daysSinceCNY + 1;
-
-            for (let i = 0; i < 12; i++) {
-                if (chineseDay <= monthLengths[i]) {
-                    chineseMonth = i;
-                    break;
-                }
-                chineseDay -= monthLengths[i];
-                chineseMonth = i + 1;
-            }
-
-            const imlekYear = chineseYear + 551;
-            const zodiacIndex = ((chineseYear - 4) % 12 + 12) % 12;
-
-            return { 
-                day: chineseDay, 
-                month: chineseMonth, 
-                year: imlekYear, 
-                zodiac: zodiacIndex, 
-                yearAnimal: chineseZodiac[zodiacIndex] 
-            };
+function getHebrewMonthLengths(hebrewYear) {
+    // Find the Gregorian year for this Hebrew year
+    const gregYearStart = hebrewYear - 3761;
+    
+    if (gregYearStart < 1900 || gregYearStart >= 2100) {
+        // Fallback for out-of-range years
+        const info = getHebrewYearInfo(hebrewYear);
+        if (info.isLeap) {
+            return [30,29,30,29,30,30,29,30,29,30,29,30,29]; // 384 days
+        } else {
+            return [30,29,30,29,30,29,30,29,30,29,30,29]; // 354 days
         }
-
-        function gregorianToHebrew(gregDate) {
-            const d = new Date(gregDate);
-            const year = d.getFullYear();
-            let roshThisYear = hebrewNewYearData[year];
-            let roshPrevYear = hebrewNewYearData[year - 1];
-            if (!roshThisYear) return { day: 1, month: 0, year: year + 3760, monthName: "Tishrei" };
-            const roshDate = new Date(year, roshThisYear[0] - 1, roshThisYear[1]);
-            let hebrewYear, daysSinceRosh;
-            if (d < roshDate) {
-                if (roshPrevYear) {
-                    const prevRoshDate = new Date(year - 1, roshPrevYear[0] - 1, roshPrevYear[1]);
-                    daysSinceRosh = Math.floor((d - prevRoshDate) / (1000 * 60 * 60 * 24));
-                    hebrewYear = year - 1 + 3761;
-                } else { daysSinceRosh = 0; hebrewYear = year + 3760; }
-            } else {
-                daysSinceRosh = Math.floor((d - roshDate) / (1000 * 60 * 60 * 24));
-                hebrewYear = year + 3761;
-            }
-            const monthLengths = [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30];
-            let hebrewMonth = 0;
-            let hebrewDay = daysSinceRosh + 1;
-            for (let i = 0; i < 13; i++) {
-                if (hebrewDay <= monthLengths[i]) { hebrewMonth = i; break; }
-                hebrewDay -= monthLengths[i];
-                hebrewMonth = i + 1;
-            }
-            const isLeap = hebrewMonth > 5;
-            const months = isLeap && hebrewMonth >= 6 ? hebrewMonthsLeap : hebrewMonths;
-            const monthName = months[Math.min(hebrewMonth, months.length - 1)] || "Tishrei";
-            return { day: hebrewDay, month: hebrewMonth, year: hebrewYear, monthName: monthName };
+    }
+    
+    const roshThis = hebrewNewYearData[gregYearStart];
+    const roshNext = hebrewNewYearData[gregYearStart + 1];
+    
+    if (!roshThis || !roshNext) {
+        // Fallback
+        const info = getHebrewYearInfo(hebrewYear);
+        if (info.isLeap) {
+            return [30,29,30,29,30,30,29,30,29,30,29,30,29];
+        } else {
+            return [30,29,30,29,30,29,30,29,30,29,30,29];
         }
+    }
+    
+    const d1 = new Date(gregYearStart, roshThis[0] - 1, roshThis[1]);
+    const d2 = new Date(gregYearStart + 1, roshNext[0] - 1, roshNext[1]);
+    const totalDays = Math.floor((d2 - d1) / (1000 * 60 * 60 * 24));
+    
+    const info = getHebrewYearInfo(hebrewYear);
+    const isLeap = info.isLeap;
+    
+    // Base month lengths
+    let months;
+    if (isLeap) {
+        months = [30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29]; // 384 base
+    } else {
+        months = [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29]; // 354 base
+    }
+    
+    const baseDays = isLeap ? 384 : 354;
+    const diff = totalDays - baseDays;
+    
+    // Adjust Cheshvan (index 1) and Kislev (index 2)
+    if (diff === -1) {
+        // Deficient: shorten Kislev to 29
+        months[2] = 29;
+    } else if (diff === 0) {
+        // Regular: no change
+    } else if (diff === 1) {
+        // Complete: lengthen Cheshvan to 30
+        months[1] = 30;
+    } else if (diff === -2 && isLeap) {
+        // Deficient leap year
+        months[1] = 29;
+        months[2] = 29;
+    }
+    
+    return months;
+}
 
-        function showModal(date) {
-            const hijri = gregorianToHijri(date);
-            const chinese = gregorianToChinese(date);
-            const hebrew = gregorianToHebrew(date);
-            const pasaran = getPasaran(date);
-            const dayOfWeek = date.getDay();
-
-            const html = '<div class="modal-date-row masehi">' +
-                '<div class="icon">📅</div>' +
-                '<div class="info">' +
-                    '<div class="label">Masehi (Gregorian)</div>' +
-                    '<div class="value">' + weekdays[dayOfWeek] + ', ' + date.getDate() + ' ' + gregorianMonths[date.getMonth()] + ' ' + date.getFullYear() + '</div>' +
-                '</div>' +
-            '</div>' +
-            '<div class="modal-date-row hijri">' +
-                '<div class="icon">🌙</div>' +
-                '<div class="info">' +
-                    '<div class="label">Hijriah (Islam)</div>' +
-                    '<div class="value">' + hijri.day + ' ' + hijriMonths[hijri.month] + ' ' + hijri.year + ' H</div>' +
-                    '<div class="sub">Tahun ' + hijri.year + ' Hijriah</div>' +
-                '</div>' +
-            '</div>' +
-            '<div class="modal-date-row chinese">' +
-                '<div class="icon">🐉</div>' +
-                '<div class="info">' +
-                    '<div class="label">Imlek (Cina)</div>' +
-                    '<div class="value">' + chineseMonths[chinese.month] + ' ' + chinese.day + ', Tahun ' + chinese.year + '</div>' +
-                    '<div class="sub">Shio ' + chinese.yearAnimal + '</div>' +
-                '</div>' +
-            '</div>' +
-            '<div class="modal-date-row hebrew">' +
-                '<div class="icon">✡️</div>' +
-                '<div class="info">' +
-                    '<div class="label">Ibrani (Hebrew)</div>' +
-                    '<div class="value">' + hebrew.day + ' ' + hebrew.monthName + ' ' + hebrew.year + '</div>' +
-                    '<div class="sub">Tahun ' + hebrew.year + '</div>' +
-                '</div>' +
-            '</div>' +
-            '<div class="modal-date-row pasaran">' +
-                '<div class="icon">🕉️</div>' +
-                '<div class="info">' +
-                    '<div class="label">Pasaran Jawa</div>' +
-                    '<div class="value">' + weekdays[dayOfWeek] + ' ' + pasaran + '</div>' +
-                    '<div class="sub">Siklus 5 hari: Legi, Pahing, Pon, Wage, Kliwon</div>' +
-                '</div>' +
-            '</div>';
-
-            document.getElementById("modalDates").innerHTML = html;
-            document.getElementById("modalOverlay").classList.add("show");
+function gregorianToHebrew(gregDate) {
+    const d = new Date(gregDate);
+    const year = d.getFullYear();
+    
+    let roshThisYear = hebrewNewYearData[year];
+    let roshPrevYear = hebrewNewYearData[year - 1];
+    
+    if (!roshThisYear) {
+        // Out of range - use approximation
+        return { day: 1, month: 0, year: year + 3760, monthName: "Tishrei" };
+    }
+    
+    const roshDate = new Date(year, roshThisYear[0] - 1, roshThisYear[1]);
+    let hebrewYear, daysSinceRosh;
+    
+    if (d < roshDate) {
+        if (roshPrevYear) {
+            const prevRoshDate = new Date(year - 1, roshPrevYear[0] - 1, roshPrevYear[1]);
+            daysSinceRosh = Math.floor((d - prevRoshDate) / (1000 * 60 * 60 * 24));
+            hebrewYear = year - 1 + 3761;
+        } else {
+            daysSinceRosh = 0;
+            hebrewYear = year + 3760;
         }
+    } else {
+        daysSinceRosh = Math.floor((d - roshDate) / (1000 * 60 * 60 * 24));
+        hebrewYear = year + 3761;
+    }
+    
+    // Get accurate month lengths for this Hebrew year
+    const monthLengths = getHebrewMonthLengths(hebrewYear);
+    const info = getHebrewYearInfo(hebrewYear);
+    const isLeap = info.isLeap;
+    
+    let hebrewMonth = 0;
+    let hebrewDay = daysSinceRosh + 1;
+    
+    for (let i = 0; i < monthLengths.length; i++) {
+        if (hebrewDay <= monthLengths[i]) {
+            hebrewMonth = i;
+            break;
+        }
+        hebrewDay -= monthLengths[i];
+        hebrewMonth = i + 1;
+    }
+    
+    const months = isLeap ? hebrewMonthsLeap : hebrewMonths;
+    const monthName = months[Math.min(hebrewMonth, months.length - 1)] || "Tishrei";
+    
+    return { day: hebrewDay, month: hebrewMonth, year: hebrewYear, monthName: monthName };
+}
 
-        function closeModal(e) {
-            if (!e || e.target === document.getElementById("modalOverlay") || e.target.closest('.modal-close')) {
-                document.getElementById("modalOverlay").classList.remove("show");
+// ========== FUNGSI TAMPILAN ==========
+
+function showModal(date) {
+    const hijri = gregorianToHijri(date);
+    const chinese = gregorianToChinese(date);
+    const hebrew = gregorianToHebrew(date);
+    const pasaran = getPasaran(date);
+    const dayOfWeek = date.getDay();
+
+    const html = '<div class="modal-date-row masehi">' +
+        '<div class="icon">📅</div>' +
+        '<div class="info">' +
+            '<div class="label">Masehi (Gregorian)</div>' +
+            '<div class="value">' + weekdays[dayOfWeek] + ', ' + date.getDate() + ' ' + gregorianMonths[date.getMonth()] + ' ' + date.getFullYear() + '</div>' +
+        '</div>' +
+    '</div>' +
+    '<div class="modal-date-row hijri">' +
+        '<div class="icon">🌙</div>' +
+        '<div class="info">' +
+            '<div class="label">Hijriah (Islam)</div>' +
+            '<div class="value">' + hijri.day + ' ' + hijriMonths[hijri.month] + ' ' + hijri.year + ' H</div>' +
+            '<div class="sub">Tahun ' + hijri.year + ' Hijriah</div>' +
+        '</div>' +
+    '</div>' +
+    '<div class="modal-date-row chinese">' +
+        '<div class="icon">🐉</div>' +
+        '<div class="info">' +
+            '<div class="label">Imlek (Cina)</div>' +
+            '<div class="value">' + chineseMonths[chinese.month] + ' ' + chinese.day + ', Tahun ' + chinese.year + '</div>' +
+            '<div class="sub">Shio ' + chinese.yearAnimal + '</div>' +
+        '</div>' +
+    '</div>' +
+    '<div class="modal-date-row hebrew">' +
+        '<div class="icon">✡️</div>' +
+        '<div class="info">' +
+            '<div class="label">Ibrani (Hebrew)</div>' +
+            '<div class="value">' + hebrew.day + ' ' + hebrew.monthName + ' ' + hebrew.year + '</div>' +
+            '<div class="sub">Tahun ' + hebrew.year + '</div>' +
+        '</div>' +
+    '</div>' +
+    '<div class="modal-date-row pasaran">' +
+        '<div class="icon">🕉️</div>' +
+        '<div class="info">' +
+            '<div class="label">Pasaran Jawa</div>' +
+            '<div class="value">' + weekdays[dayOfWeek] + ' ' + pasaran + '</div>' +
+            '<div class="sub">Siklus 5 hari: Legi, Pahing, Pon, Wage, Kliwon</div>' +
+        '</div>' +
+    '</div>';
+
+    document.getElementById("modalDates").innerHTML = html;
+    document.getElementById("modalOverlay").classList.add("show");
+}
+
+function closeModal(e) {
+    if (!e || e.target === document.getElementById("modalOverlay") || e.target.closest('.modal-close')) {
+        document.getElementById("modalOverlay").classList.remove("show");
+    }
+}
+
+function searchDate() {
+    const input = document.getElementById("searchDate").value;
+    if (input) {
+        const parts = input.split('-');
+        const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+        showModal(date);
+    }
+}
+
+function renderToday() {
+    const today = new Date();
+    const hijri = gregorianToHijri(today);
+    const chinese = gregorianToChinese(today);
+    const hebrew = gregorianToHebrew(today);
+    const pasaran = getPasaran(today);
+
+    const html = '<div class="date-box" onclick="showModal(new Date());">' +
+        '<div class="label">Masehi (Gregorian)</div>' +
+        '<div class="day-num">' + today.getDate() + '</div>' +
+        '<div class="month-year">' + gregorianMonths[today.getMonth()] + ' ' + today.getFullYear() + '</div>' +
+        '<div class="weekday">' + weekdays[today.getDay()] + '</div>' +
+        '<div class="pasaran">' + pasaran + '</div>' +
+    '</div>' +
+    '<div class="date-box hijri" onclick="showModal(new Date());">' +
+        '<div class="label">Hijriah (Islam)</div>' +
+        '<div class="day-num">' + hijri.day + '</div>' +
+        '<div class="month-year">' + hijriMonths[hijri.month] + '</div>' +
+        '<div class="weekday">Tahun ' + hijri.year + ' H</div>' +
+        '<div class="pasaran">' + pasaran + '</div>' +
+    '</div>' +
+    '<div class="date-box chinese" onclick="showModal(new Date());">' +
+        '<div class="label">Imlek (Cina)</div>' +
+        '<div class="day-num">' + chinese.day + '</div>' +
+        '<div class="month-year">' + chineseMonths[chinese.month] + '</div>' +
+        '<div class="weekday">Tahun ' + chinese.year + ' · Shio ' + chinese.yearAnimal + '</div>' +
+        '<div class="pasaran">' + pasaran + '</div>' +
+    '</div>' +
+    '<div class="date-box hebrew" onclick="showModal(new Date());">' +
+        '<div class="label">Ibrani (Hebrew)</div>' +
+        '<div class="day-num">' + hebrew.day + '</div>' +
+        '<div class="month-year">' + hebrew.monthName + '</div>' +
+        '<div class="weekday">Tahun ' + hebrew.year + '</div>' +
+        '<div class="pasaran">' + pasaran + '</div>' +
+    '</div>';
+
+    document.getElementById("todayGrid").innerHTML = html;
+}
+
+function renderCalendar() {
+    const year = displayDate.getFullYear();
+    const month = displayDate.getMonth();
+    document.getElementById("currentMonth").textContent = gregorianMonths[month] + ' ' + year;
+    const headerHtml = weekdaysShort.map(function(d) { return '<div class="day-header">' + d + '</div>'; }).join("");
+    document.getElementById("calendarHeader").innerHTML = headerHtml;
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, month, 0).getDate();
+    const today = new Date();
+    const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+    let html = "";
+    for (let i = firstDay - 1; i >= 0; i--) {
+        const day = daysInPrevMonth - i;
+        const date = new Date(year, month - 1, day);
+        html += renderDayCell(date, day, true);
+    }
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        html += renderDayCell(date, day, false, isCurrentMonth && today.getDate() === day);
+    }
+    const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+    const remainingCells = totalCells - (firstDay + daysInMonth);
+    for (let day = 1; day <= remainingCells; day++) {
+        const date = new Date(year, month + 1, day);
+        html += renderDayCell(date, day, true);
+    }
+    document.getElementById("calendarGrid").innerHTML = html;
+    setupTooltips();
+    setupDayClicks();
+}
+
+function renderDayCell(date, dayNum, isOtherMonth, isToday) {
+    const hijri = gregorianToHijri(date);
+    const chinese = gregorianToChinese(date);
+    const hebrew = gregorianToHebrew(date);
+    const pasaran = getPasaran(date);
+    const dayOfWeek = date.getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    const dateStr = date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0') + '-' + String(date.getDate()).padStart(2,'0');
+
+    return '<div class="day-cell ' + (isOtherMonth ? 'other-month ' : '') + (isToday ? 'today' : '') + '" data-date="' + dateStr + '">' +
+        (isWeekend ? '<div class="weekend"></div>' : '') +
+        '<div class="gregorian">' + dayNum + '</div>' +
+        '<div class="hijri-small">' + hijri.day + '</div>' +
+        '<div class="chinese-small">' + chineseMonths[chinese.month].substring(0,3) + ' ' + chinese.day + '</div>' +
+        '<div class="pasaran-small">' + pasaran + '</div>' +
+    '</div>';
+}
+
+function setupTooltips() {
+    const tooltip = document.getElementById("tooltip");
+    const cells = document.querySelectorAll(".day-cell");
+    cells.forEach(function(cell) {
+        cell.addEventListener("mouseenter", function(e) {
+            const dateStr = cell.getAttribute("data-date");
+            if (dateStr) {
+                const parts = dateStr.split('-');
+                const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                const hijri = gregorianToHijri(date);
+                const chinese = gregorianToChinese(date);
+                const hebrew = gregorianToHebrew(date);
+                const pasaran = getPasaran(date);
+                const dayOfWeek = date.getDay();
+
+                tooltip.innerHTML = '<div class="tt-row"><span class="tt-label">Masehi</span><span>' + date.getDate() + ' ' + gregorianMonths[date.getMonth()] + ' ' + date.getFullYear() + '</span></div>' +
+                    '<div class="tt-row"><span class="tt-label">Hijriah</span><span>' + hijri.day + ' ' + hijriMonths[hijri.month] + ' · Tahun ' + hijri.year + ' H</span></div>' +
+                    '<div class="tt-row"><span class="tt-label">Imlek</span><span>' + chineseMonths[chinese.month] + ' ' + chinese.day + ' · Tahun ' + chinese.year + ' · Shio ' + chinese.yearAnimal + '</span></div>' +
+                    '<div class="tt-row"><span class="tt-label">Ibrani</span><span>' + hebrew.day + ' ' + hebrew.monthName + ' · Tahun ' + hebrew.year + '</span></div>' +
+                    '<div class="tt-row"><span class="tt-label">Pasaran</span><span>' + weekdays[dayOfWeek] + ' ' + pasaran + '</span></div>';
+                tooltip.classList.add("show");
             }
-        }
+        });
+        cell.addEventListener("mousemove", function(e) {
+            const x = e.clientX + 15;
+            const y = e.clientY + 15;
+            const rect = tooltip.getBoundingClientRect();
+            const finalX = x + rect.width > window.innerWidth ? e.clientX - rect.width - 10 : x;
+            const finalY = y + rect.height > window.innerHeight ? e.clientY - rect.height - 10 : y;
+            tooltip.style.left = finalX + "px";
+            tooltip.style.top = finalY + "px";
+        });
+        cell.addEventListener("mouseleave", function() { tooltip.classList.remove("show"); });
+    });
+}
 
-        function searchDate() {
-            const input = document.getElementById("searchDate").value;
-            if (input) {
-                const parts = input.split('-');
+function setupDayClicks() {
+    const cells = document.querySelectorAll(".day-cell");
+    cells.forEach(function(cell) {
+        cell.addEventListener("click", function() {
+            const dateStr = cell.getAttribute("data-date");
+            if (dateStr) {
+                const parts = dateStr.split('-');
                 const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
                 showModal(date);
             }
-        }
+        });
+    });
+}
 
-        function renderToday() {
-            const today = new Date();
-            const hijri = gregorianToHijri(today);
-            const chinese = gregorianToChinese(today);
-            const hebrew = gregorianToHebrew(today);
-            const pasaran = getPasaran(today);
+function changeMonth(delta) {
+    displayDate.setMonth(displayDate.getMonth() + delta);
+    renderCalendar();
+}
 
-            const html = '<div class="date-box" onclick="showModal(new Date());">' +
-                '<div class="label">Masehi (Gregorian)</div>' +
-                '<div class="day-num">' + today.getDate() + '</div>' +
-                '<div class="month-year">' + gregorianMonths[today.getMonth()] + ' ' + today.getFullYear() + '</div>' +
-                '<div class="weekday">' + weekdays[today.getDay()] + '</div>' +
-                '<div class="pasaran">' + pasaran + '</div>' +
-            '</div>' +
-            '<div class="date-box hijri" onclick="showModal(new Date());">' +
-                '<div class="label">Hijriah (Islam)</div>' +
-                '<div class="day-num">' + hijri.day + '</div>' +
-                '<div class="month-year">' + hijriMonths[hijri.month] + '</div>' +
-                '<div class="weekday">Tahun ' + hijri.year + ' H</div>' +
-                '<div class="pasaran">' + pasaran + '</div>' +
-            '</div>' +
-            '<div class="date-box chinese" onclick="showModal(new Date());">' +
-                '<div class="label">Imlek (Cina)</div>' +
-                '<div class="day-num">' + chinese.day + '</div>' +
-                '<div class="month-year">' + chineseMonths[chinese.month] + '</div>' +
-                '<div class="weekday">Tahun ' + chinese.year + ' · Shio ' + chinese.yearAnimal + '</div>' +
-                '<div class="pasaran">' + pasaran + '</div>' +
-            '</div>' +
-            '<div class="date-box hebrew" onclick="showModal(new Date());">' +
-                '<div class="label">Ibrani (Hebrew)</div>' +
-                '<div class="day-num">' + hebrew.day + '</div>' +
-                '<div class="month-year">' + hebrew.monthName + '</div>' +
-                '<div class="weekday">Tahun ' + hebrew.year + '</div>' +
-                '<div class="pasaran">' + pasaran + '</div>' +
-            '</div>';
-
-            document.getElementById("todayGrid").innerHTML = html;
-        }
-
-        function renderCalendar() {
-            const year = displayDate.getFullYear();
-            const month = displayDate.getMonth();
-            document.getElementById("currentMonth").textContent = gregorianMonths[month] + ' ' + year;
-            const headerHtml = weekdaysShort.map(function(d) { return '<div class="day-header">' + d + '</div>'; }).join("");
-            document.getElementById("calendarHeader").innerHTML = headerHtml;
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const daysInPrevMonth = new Date(year, month, 0).getDate();
-            const today = new Date();
-            const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
-            let html = "";
-            for (let i = firstDay - 1; i >= 0; i--) {
-                const day = daysInPrevMonth - i;
-                const date = new Date(year, month - 1, day);
-                html += renderDayCell(date, day, true);
-            }
-            for (let day = 1; day <= daysInMonth; day++) {
-                const date = new Date(year, month, day);
-                html += renderDayCell(date, day, false, isCurrentMonth && today.getDate() === day);
-            }
-            const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
-            const remainingCells = totalCells - (firstDay + daysInMonth);
-            for (let day = 1; day <= remainingCells; day++) {
-                const date = new Date(year, month + 1, day);
-                html += renderDayCell(date, day, true);
-            }
-            document.getElementById("calendarGrid").innerHTML = html;
-            setupTooltips();
-            setupDayClicks();
-        }
-
-        function renderDayCell(date, dayNum, isOtherMonth, isToday) {
-            const hijri = gregorianToHijri(date);
-            const chinese = gregorianToChinese(date);
-            const hebrew = gregorianToHebrew(date);
-            const pasaran = getPasaran(date);
-            const dayOfWeek = date.getDay();
-            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-            const dateStr = date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0') + '-' + String(date.getDate()).padStart(2,'0');
-
-            return '<div class="day-cell ' + (isOtherMonth ? 'other-month ' : '') + (isToday ? 'today' : '') + '" data-date="' + dateStr + '">' +
-                (isWeekend ? '<div class="weekend"></div>' : '') +
-                '<div class="gregorian">' + dayNum + '</div>' +
-                '<div class="hijri-small">' + hijri.day + '</div>' +
-                '<div class="chinese-small">' + chineseMonths[chinese.month].substring(0,3) + ' ' + chinese.day + '</div>' +
-                '<div class="pasaran-small">' + pasaran + '</div>' +
-            '</div>';
-        }
-
-        function setupTooltips() {
-            const tooltip = document.getElementById("tooltip");
-            const cells = document.querySelectorAll(".day-cell");
-            cells.forEach(function(cell) {
-                cell.addEventListener("mouseenter", function(e) {
-                    const dateStr = cell.getAttribute("data-date");
-                    if (dateStr) {
-                        const parts = dateStr.split('-');
-                        const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-                        const hijri = gregorianToHijri(date);
-                        const chinese = gregorianToChinese(date);
-                        const hebrew = gregorianToHebrew(date);
-                        const pasaran = getPasaran(date);
-                        const dayOfWeek = date.getDay();
-
-                        tooltip.innerHTML = '<div class="tt-row"><span class="tt-label">Masehi</span><span>' + date.getDate() + ' ' + gregorianMonths[date.getMonth()] + ' ' + date.getFullYear() + '</span></div>' +
-                            '<div class="tt-row"><span class="tt-label">Hijriah</span><span>' + hijri.day + ' ' + hijriMonths[hijri.month] + ' · Tahun ' + hijri.year + ' H</span></div>' +
-                            '<div class="tt-row"><span class="tt-label">Imlek</span><span>' + chineseMonths[chinese.month] + ' ' + chinese.day + ' · Tahun ' + chinese.year + ' · Shio ' + chinese.yearAnimal + '</span></div>' +
-                            '<div class="tt-row"><span class="tt-label">Ibrani</span><span>' + hebrew.day + ' ' + hebrew.monthName + ' · Tahun ' + hebrew.year + '</span></div>' +
-                            '<div class="tt-row"><span class="tt-label">Pasaran</span><span>' + weekdays[dayOfWeek] + ' ' + pasaran + '</span></div>';
-                        tooltip.classList.add("show");
-                    }
-                });
-                cell.addEventListener("mousemove", function(e) {
-                    const x = e.clientX + 15;
-                    const y = e.clientY + 15;
-                    const rect = tooltip.getBoundingClientRect();
-                    const finalX = x + rect.width > window.innerWidth ? e.clientX - rect.width - 10 : x;
-                    const finalY = y + rect.height > window.innerHeight ? e.clientY - rect.height - 10 : y;
-                    tooltip.style.left = finalX + "px";
-                    tooltip.style.top = finalY + "px";
-                });
-                cell.addEventListener("mouseleave", function() { tooltip.classList.remove("show"); });
-            });
-        }
-
-        function setupDayClicks() {
-            const cells = document.querySelectorAll(".day-cell");
-            cells.forEach(function(cell) {
-                cell.addEventListener("click", function() {
-                    const dateStr = cell.getAttribute("data-date");
-                    if (dateStr) {
-                        const parts = dateStr.split('-');
-                        const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-                        showModal(date);
-                    }
-                });
-            });
-        }
-
-        function changeMonth(delta) {
-            displayDate.setMonth(displayDate.getMonth() + delta);
-            renderCalendar();
-        }
-
-        renderToday();
-        renderCalendar();
+renderToday();
+renderCalendar();
     </script>
 </body>
 </html>
